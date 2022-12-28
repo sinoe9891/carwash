@@ -59,36 +59,38 @@ if ($hora < 6) {
 				</div>
 				<div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
 					<ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
+						<?php
+						$consultacategoria = $conn->query("SELECT * FROM `categorias_menu` WHERE estado = 'a'");
+						$contador = 0;
+						while ($solicitud = $consultacategoria->fetch_array()) {
+							$id_categoria = $solicitud['id_categoria'];
+							$nombre_categoria = $solicitud['nombre_categoria'];
+							$icono = $solicitud['icono'];
+							$contador++;
+							$active = 'active';
+							if ($contador == 1) {
+								$active = 'active';
+							}else{
+								$active ='';
+							}
+							?>
+
 						<li class="nav-item">
-							<a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active" data-bs-toggle="pill" href="#tab-1">
+							<a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 <?php echo $active ?>" data-bs-toggle="pill" href="#tab-<?php echo $id_categoria ?>">
 								<!-- <i class="fa fa-coffee fa-2x text-primary"></i> -->
-								<img src="img/iconos-03.png" alt="">
+								<img src="<?php echo $icono ?>" alt="">
 								<div class="ps-3">
-									<small class="text-body">Popular</small>
-									<h6 class="mt-n1 mb-0">Herramientas</h6>
+									<!-- <small class="text-body">Popular</small> -->
+									<h6 class="mt-n1 mb-0"><?php echo $nombre_categoria ?></h6>
 								</div>
 							</a>
 						</li>
-						<li class="nav-item">
-							<a class="d-flex align-items-center text-start mx-3 pb-3" data-bs-toggle="pill" href="#tab-2">
-								<!-- <i class="fa fa-hamburger fa-2x text-primary"></i> -->
-								<img src="img/iconos-05.png" alt="">
-								<div class="ps-3">
-									<small class="text-body">Special</small>
-									<h6 class="mt-n1 mb-0">Construcción</h6>
-								</div>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="d-flex align-items-center text-start mx-3 me-0 pb-3" data-bs-toggle="pill" href="#tab-3">
-								<!-- <i class="fa fa-utensils fa-2x text-primary"></i> -->
-								<img src="img/iconos-04.png" alt="">
-								<div class="ps-3">
-									<small class="text-body">Lovely</small>
-									<h6 class="mt-n1 mb-0">Equipamiento</h6>
-								</div>
-							</a>
-						</li>
+
+						<?php
+						};
+						?>
+
+						
 					</ul>
 					<div class="tab-content">
 						<div id="tab-1" class="tab-pane fade show p-0 active">

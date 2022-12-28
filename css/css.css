@@ -3,7 +3,9 @@
 		background-color: white !important;
 	}
 }
-
+.nav-item a > img {
+    width: 31.99px !important;
+}
 .sticky-top.navbar-dark .navbar-nav .nav-link {
     padding: 20px 0;
     color: var(--dark) !important;

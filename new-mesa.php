@@ -63,29 +63,84 @@ if ($hora < 6) {
 										<div class="card-body">
 											<?php
 											$obtenerTodo = obtenerTodo('main_users');
-											$consulta = $conn->query("SELECT * FROM mesas a WHERE id=(SELECT max(id) FROM mesas) ;");
+											$consulta = $conn->query("SELECT * FROM mesas a WHERE id_asignacion=(SELECT max(id_asignacion) FROM mesas) ;");
 											$numero = 1;
-											while ($solicitud = $consulta->fetch_array()) {
-												$id = $solicitud['id'];
-												$estado = $solicitud['estado_mesa'];
-												$numero_mesa = $solicitud['numero_mesa'];
+											if ($consulta->num_rows != 0) {
+												while ($solicitud = $consulta->fetch_array()) {
+													$id = $solicitud['id_asignacion'];
+													$estado = $solicitud['estado_mesa'];
+													$numero_mesa = $solicitud['numero_mesa'];
 
-												if ($estado == 'v') {
-													$estadoLote = 'Vendido';
-													$color = 'bg-secondary';
-												} elseif ($estado == 'd') {
-													$estadoLote = 'Disponible';
-													$color = 'bg-success';
-												} elseif ($estado == 'r') {
-													$estadoLote = 'Reservado';
-													$color = 'bg-info';
-												}
+													if ($estado == 'v') {
+														$estadoLote = 'Vendido';
+														$color = 'bg-secondary';
+													} elseif ($estado == 'd') {
+														$estadoLote = 'Disponible';
+														$color = 'bg-success';
+													} elseif ($estado == 'r') {
+														$estadoLote = 'Reservado';
+														$color = 'bg-info';
+													}
 											?>
+
+
+													<div class="row">
+														<div class="col-md-6 col-12">
+															<div class="form-group">
+																<label for="first-name-column">Número de Departamento*</label>
+																<input type="number" class="form-control" id="numero_mesa" name="numero_mesa" value="<?php echo $numero_mesa + 1; ?>" readonly>
+															</div>
+														</div>
+														<div class="col-md-6 col-12">
+															<div class="form-group">
+																<label for="first-name-column">Empleado</label>
+																<select class="form-select" name="usuario" id="role">
+																	<?php
+																	$obtenerTodo = obtenerColaboradores('main_users');
+																	if ($obtenerTodo->num_rows > 0) {
+																		while ($row = $obtenerTodo->fetch_assoc()) {
+																			$usuario_name = $row['usuario_name'];
+																			$apellidos = $row['apellidos'];
+																			$id_user = $row['id'];
+
+																			echo '<option name="usuario" value="' . $id_user . '">' . $usuario_name . ' ' . $apellidos . '</option>';
+																		}
+																	}
+																	?>
+																</select>
+															</div>
+														</div>
+
+														<div class="col-md-6 col-12">
+															<div class="form-group">
+																<label for="last-name-column">Estado</label>
+																<select class="form-select" name="estado" id="estado">
+																	<?php
+																	if ($estado == 'a') {
+																		echo "<option name='estado' value='a' selected>Habilitado</option>";
+																		echo "<option name='estado' value='d'>Deshabilitado</option>";
+																	} elseif ($estado == 'd') {
+																		echo "<option name='estado' value='a'>Habilitado</option>";
+																		echo "<option name='estado' value='d' selected>Deshabilitado</option>";
+																		$estado = 'Disponible';
+																	}
+																	?>
+																</select>
+															</div>
+														</div>
+													</div>
+
+
+
+												<?php
+												}
+											} else {
+												?>
 												<div class="row">
 													<div class="col-md-6 col-12">
 														<div class="form-group">
 															<label for="first-name-column">Número de Departamento*</label>
-															<input type="number" class="form-control" id="numero_mesa" name="numero_mesa" value="<?php echo $numero_mesa + 1; ?>" readonly>
+															<input type="number" class="form-control" id="numero_mesa" name="numero_mesa" value="<?php echo 1; ?>" readonly>
 														</div>
 													</div>
 													<div class="col-md-6 col-12">
@@ -93,15 +148,14 @@ if ($hora < 6) {
 															<label for="first-name-column">Empleado</label>
 															<select class="form-select" name="usuario" id="role">
 																<?php
-																$obtenerTodo = obtenerTodo('main_users');
+																$obtenerTodo = obtenerColaboradores('main_users');
 																if ($obtenerTodo->num_rows > 0) {
 																	while ($row = $obtenerTodo->fetch_assoc()) {
 																		$usuario_name = $row['usuario_name'];
 																		$apellidos = $row['apellidos'];
 																		$id_user = $row['id'];
-																		
+
 																		echo '<option name="usuario" value="' . $id_user . '">' . $usuario_name . ' ' . $apellidos . '</option>';
-																		
 																	}
 																}
 																?>
@@ -113,27 +167,24 @@ if ($hora < 6) {
 														<div class="form-group">
 															<label for="last-name-column">Estado</label>
 															<select class="form-select" name="estado" id="estado">
-																<?php
-																if ($estado == 'a') {
-																	echo "<option name='estado' value='a' selected>Habilitado</option>";
-																	echo "<option name='estado' value='d'>Deshabilitado</option>";
-																} elseif ($estado == 'd') {
-																	echo "<option name='estado' value='a'>Habilitado</option>";
-																	echo "<option name='estado' value='d' selected>Deshabilitado</option>";
-																	$estado = 'Disponible';
-																}
-																?>
+																<option name='estado' value='a' selected>Habilitado</option>
+																<option name='estado' value='d'>Deshabilitado</option>";
 															</select>
 														</div>
 													</div>
 												</div>
+
+
+
+
+
 											<?php
 											}
 											?>
 										</div>
 									</div>
 									<div class="col-12 d-flex justify-content-end">
-										<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="accion" value="newMesa">
+										<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="accion" value="newasignacion">
 										<input class="btn btn-primary me-1 mb-1" type="submit" value="Crear" name="crear">
 										<a href="mesas">
 											<div class="btn btn-secondary me-1 mb-1">Regresar</div>
@@ -169,8 +220,8 @@ if ($hora < 6) {
 				echo "<script>
 				Swal.fire({
 					icon: 'success',
-					title: '¡Mesa Creada!',
-					text: 'La mesa se ha creado correctamente',
+					title: 'Asignación Creada!',
+					text: 'Asignación se ha creado correctamente',
 					position: 'center',
 					showConfirmButton: true
 				}).then(function () {

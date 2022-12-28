@@ -11,6 +11,16 @@
 			return false;
 		}
 	}
+	function obtenerColaboradores($tabla = null) {
+		include 'conexion.php';
+		try {
+			return $conn->query("SELECT * FROM {$tabla} WHERE role_user = 4 or role_user = 3");
+
+		} catch(Exception $e) {
+			echo "Error! : " . $e->getMessage();
+			return false;
+		}
+	}
 	function obtenerRoles() {
 		include 'conexion.php';
 		try {

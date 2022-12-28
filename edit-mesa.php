@@ -59,7 +59,7 @@ if (isset($_GET['idm'])) {
 			<div class="container">
 				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
 					<h5 class="section-title ff-secondary text-center text-primary fw-normal">Administrar</h5>
-					<h1 class="mb-5">Editar Departamento</h1>
+					<h1 class="mb-5">Editar Asignación</h1>
 				</div>
 				<section class="section clientes">
 					<div class="card">
@@ -71,10 +71,10 @@ if (isset($_GET['idm'])) {
 										<div class="card-body">
 											<?php
 											$obtenerTodo = obtenerTodo('main_users');
-											$consulta = $conn->query("SELECT * FROM `mesas` where id = '$idm'");
+											$consulta = $conn->query("SELECT * FROM `mesas` where id_asignacion = '$idm'");
 											$numero = 1;
 											while ($solicitud = $consulta->fetch_array()) {
-												$id = $solicitud['id'];
+												$id = $solicitud['id_asignacion'];
 												$estado = $solicitud['estado_mesa'];
 												$numero_mesa = $solicitud['numero_mesa'];
 												$id_mesero = $solicitud['id_mesero'];
@@ -93,7 +93,7 @@ if (isset($_GET['idm'])) {
 												<div class="row">
 													<div class="col-md-6 col-12">
 														<div class="form-group">
-															<label for="first-name-column">Número de Departamento</label>
+															<label for="first-name-column">Número de Asignación</label>
 															<input type="hidden" id="idm" name="idm" value="<?php echo $idm; ?>">
 															<input type="text" class="form-control" id="numero_mesa" name="numero_mesa" value="<?php echo $numero_mesa; ?>" disabled readonly>
 															<!-- <select class="form-select" name="role" id="role">
@@ -120,7 +120,7 @@ if (isset($_GET['idm'])) {
 															<select class="form-select" name="role" id="role">
 																<option name="role" value="0" selected>Sin Asignar</option>
 																<?php
-																$obtenerTodo = obtenerTodo('main_users');
+																$obtenerTodo = obtenerColaboradores('main_users');
 																if ($obtenerTodo->num_rows > 0) {
 																	while ($row = $obtenerTodo->fetch_assoc()) {
 																		$usuario_name = $row['usuario_name'];
@@ -189,8 +189,8 @@ if (isset($_GET['idm'])) {
 				console.log('Hola');
 				Swal.fire({
 					icon: 'success',
-					title: '¡Mesa Actualizada!',
-					text: 'Mesa fue actualizada correctamente',
+					title: 'Asignación Actualizada!',
+					text: 'Asignación fue actualizada correctamente',
 					position: 'center',
 					showConfirmButton: true
 				}).then(function () {
@@ -202,7 +202,7 @@ if (isset($_GET['idm'])) {
 				Swal.fire({
 					icon: 'error',
 					title: 'Oops...',
-					text: 'La mesa no se actualizó'
+					text: 'Asignación no se actualizó'
 				}).then(function () {
 					window.location = 'mesas.php';
 				});

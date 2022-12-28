@@ -42,7 +42,7 @@ if (isset($_POST['idm']) && isset($_POST['updatemesa'])) {
 	if ($bandera == 'Actualizar') {
 		$role = $_POST['role'];
 		$estado = $_POST['estado'];
-		$sql = "UPDATE `mesas` SET `id_mesero` = '$role', `estado_mesa` = '$estado', `asignada` = '$asignar'  WHERE `mesas`.`id` = $idm";
+		$sql = "UPDATE `mesas` SET `id_mesero` = '$role', `estado_mesa` = '$estado', `asignada` = '$asignar'  WHERE `mesas`.`id_asignacion` = $idm";
 
 		if ($conn->query($sql) === TRUE) {
 			echo "Record updated successfully";
@@ -156,6 +156,96 @@ if (isset($_POST['idplato']) && isset($_POST['updateplato'])) {
 			header('Location: ../../edit-plato.php?idplato='.$idplato.'&up=1');
 		} else {
 			// header('Location: ../../edit-plato.php?idm='.$idm.'&up=0');
+		}
+	}
+};
+// Editar Categoría
+if (isset($_POST['idcategoria']) && isset($_POST['updatecategoria'])) {
+	$idcategoria = $_POST['idcategoria'];
+	$nombrecategoria = $_POST['nombrecategoria'];
+	$estado = $_POST['estado'];
+	$descripcion = $_POST['descripcion'];
+	$url = $_POST['url'];
+	$fechaActual = date('dmy-h-i-s');
+	if ($_FILES['imagen']['name'] != null) {
+		// echo "Tiene datos La variable";
+		$imagen = $_FILES['imagen']['name'];
+		// $ruta = 'D:/xampp7.2/htdocs/ceutec/proyecto-conn/images/'.$url;
+		$rutaproductos = '/Applications/XAMPP/xamppfiles/htdocs/personales/carwash/img/categorias/';
+		if (file_exists($rutaproductos)) {
+			// echo "<br> La carpeta " . $rutaproductos . " ya existe<br>";
+			$tipo = $_FILES['imagen']['type'];
+			$tamano = $_FILES['imagen']['size'];
+			$temp = $_FILES['imagen']['tmp_name'];
+			$ruta = '/Applications/XAMPP/xamppfiles/htdocs/personales/carwash/img/categorias/' . $imagen;
+			// echo $imagen;
+			// Existe la image?
+			if (file_exists($ruta)) {
+				// echo "<br>La imagen $ruta ya existe se generará una nueva<br>";
+				//Cambiamos los permisos del archivo a 777 para poder modificarlo posteriormente
+				chmod($rutaproductos, 0777);
+				// Mover el archivo a la carpeta
+				list($base, $extension) = explode('.', $imagen);
+				$newname = implode('.', [$base, $fechaActual, $extension]);
+				move_uploaded_file($temp, "$rutaproductos/$newname");
+				echo $newname . '<br>';
+			} else {
+				echo "<br>La imagen $ruta no existe<br>";
+				chmod($rutaproductos, 0777);
+				// Mover el archivo a la carpeta
+				list($base, $extension) = explode('.', $imagen);
+				$newname = implode('.', [$fechaActual, $extension]);
+				move_uploaded_file($temp, "$rutaproductos/$newname");
+			}
+			$sql = "UPDATE `categorias_menu` SET `nombre_categoria` = '$nombrecategoria', `descripcion` = '$descripcion', `icono` = 'img/categorias/$newname',  `estado` = '$estado'  WHERE `categorias_menu`.`id_categoria` = $idcategoria";
+
+			if ($conn->query($sql) === TRUE) {
+				echo "Record updated successfully";
+				header('Location: ../../edit-categoria?idcategoria='.$idcategoria.'&up=1');
+			} else {
+				// header('Location: ../../edit-categoria?idm='.$idm.'&up=0');
+			}
+		} else {
+			// echo "<br>El fichero $rutaproductos no existe<br>";
+			mkdir($rutaproductos, 0777);
+			chmod($rutaproductos, 0777);
+			// Mover el archivo a la carpeta
+			list($base, $extension) = explode('.', $imagen);
+			$newname = implode('.', [$fechaActual, $extension]);
+			move_uploaded_file($temp, "$rutaproductos/$newname");
+
+			$tipo = $_FILES['imagen']['type'];
+			$tamano = $_FILES['imagen']['size'];
+			$temp = $_FILES['imagen']['tmp_name'];
+			$ruta = '/Applications/XAMPP/xamppfiles/htdocs/personales/carwash/img/categorias/' . $newname;
+			echo $newname . '<br>';
+			// Existe la image?
+			if (file_exists($ruta)) {
+				echo "<br>La imagen $ruta ya existe<br>";
+			} else {
+				echo "<br>La imagen $ruta no existe<br>";
+			}
+			//Cambiamos los permisos del archivo a 777 para poder modificarlo posteriormente
+			chmod($ruta, 0777);
+			move_uploaded_file($temp, $ruta);
+			$sql = "UPDATE `categorias_menu` SET `nombre_categoria` = '$nombrecategoria', `descripcion` = '$descripcion', `icono` = 'img/categorias/$newname', `estado` = '$estado'  WHERE `categorias_menu`.`id_categoria` = $idcategoria";
+
+			if ($conn->query($sql) === TRUE) {
+				echo "Record updated successfully";
+				// header('Location: ../../edit-categoria?idcategoria='.$idcategoria.'&up=1');
+			} else {
+				// header('Location: ../../edit-categoria?idm='.$idm.'&up=0');
+			}
+		}
+	} else {
+		$sql = "UPDATE `categorias_menu` SET `nombre_categoria` = '$nombrecategoria', `descripcion` = '$descripcion', `icono` = '$url', `estado` = '$estado'  WHERE `categorias_menu`.`id_categoria` = $idcategoria";
+		echo $url;
+		echo 'Entró en el último';
+		if ($conn->query($sql) === TRUE) {
+			echo "Record updated successfully";
+			header('Location: ../../edit-categoria?idcategoria='.$idcategoria.'&up=1');
+		} else {
+			// header('Location: ../../edit-categoria.php?idm='.$idm.'&up=0');
 		}
 	}
 };

@@ -11,7 +11,6 @@ if (!isset($_SESSION['nombre_usuario'])) {
 }else{
 	$name = $_SESSION['nombre_usuario'];
 }
-
 $today = getdate();
 $hora = $today["hours"];
 if ($hora < 6) {
@@ -44,11 +43,11 @@ if (isset($_GET['menu'])) {
 <body>
 	<div class="container-xxl bg-white p-0">
 		<!-- Spinner Start -->
-		<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+		<!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
 			<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
 				<span class="sr-only">Loading...</span>
 			</div>
-		</div>
+		</div> -->
 		<!-- Spinner End -->
 
 
@@ -76,7 +75,7 @@ if (isset($_GET['menu'])) {
 			<div class="container">
 				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
 					<h5 class="section-title ff-secondary text-center text-primary fw-normal">Control</h5>
-					<h1 class="mb-5">Productos</h1>
+					<h1 class="mb-5">Categorías</h1>
 				</div>
 				<section class="section clientes">
 					<div class="card">
@@ -111,10 +110,9 @@ if (isset($_GET['menu'])) {
 								<thead>
 									<tr>
 										<th>No.</th>
-										<th>Nombre</th>
-										<th>Categoría</th>
-										<th>Precio</th>
-										<th>Oferta</th>
+										<th>Icono</th>
+										<th>Nombre Categoría</th>
+										<th>Descripción</th>
 										<th>Estado</th>
 										<th>Acciones</th>
 									</tr>
@@ -125,21 +123,19 @@ if (isset($_GET['menu'])) {
 									// $busqueda = $_GET['menu'];
 
 									if ($busqueda == '') {
-										$consulta = $conn->query("SELECT * FROM menu a, categorias_menu b WHERE a.categoria = b.id_categoria ORDER BY nombre ASC");
+										$consulta = $conn->query("SELECT * FROM categorias_menu ORDER BY nombre_categoria ASC");
 									} else if ($busqueda) {
-										$consulta = $conn->query("SELECT * FROM menu WHERE nombre LIKE '%$busqueda%' ORDER BY nombre ASC");
+										$consulta = $conn->query("SELECT * FROM categorias_menu LIKE '%$busqueda%' ORDER BY nombre_categoria ASC");
 									}
 									// $consulta = $conn->query("SELECT * FROM menu WHERE nombre LIKE '%$busqueda%' ORDER BY nombre ASC");
 									$contador = 1;
 									while ($solicitud = $consulta->fetch_array()) {
-										$id = $solicitud['id'];
-										$url_foto = $solicitud['url_foto'];
+										$id = $solicitud['id_categoria'];
+										$url_foto = $solicitud['icono'];
 										$descripcion = $solicitud['descripcion'];
-										$nombre = $solicitud['nombre'];
+										$nombre = $solicitud['nombre_categoria'];
 										$categoria = $solicitud['nombre_categoria'];
-										$precio = $solicitud['precio'];
-										$precio_oferta = $solicitud['precio_oferta'];
-										$estado = $solicitud['estado_plato'];
+										$estado = $solicitud['estado'];
 										if ($estado == 'a') {
 											$estadoUser = 'Habilitado';
 											$color = 'bg-success';
@@ -150,24 +146,13 @@ if (isset($_GET['menu'])) {
 									?>
 										<tr id="solicitud:<?php echo $solicitud['id'] ?>">
 											<td><?php echo $contador++; ?></td>
-											<td><img width="50px" ; src="<?php echo $url_foto; ?>" alt=""><?php echo '   ' . $nombre; ?></td>
-											<td><?php echo $categoria ?></td>
-											<td><?php echo 'L.' . $precio ?></td>
-											<td><?php
-												if ($precio_oferta == 0.00) {
-													$precio_oferta = 'N/A';
-												}else{
-													$precio_oferta = 'L.' . $precio_oferta;
-												}
-
-												echo $precio_oferta;
-											
-											
-											?></td>
+											<td><img width="50px" ; src="<?php echo $url_foto; ?>" alt=""></td>
+											<td><?php echo '   ' . $nombre; ?></td>
+											<td><?php echo $descripcion ?></td>
 											<td><?php echo '<span class="badge ' . $color . '">' . $estadoUser . '</span>' ?></td>
 											<td>
-												<a href="edit-plato?idplato=<?php echo $solicitud['id'] ?>" target="_self"><span class="badge bg-primary"><i class="fas fa-edit"></i>Editar</span></a>
-												<span class="badge bg-danger" id="<?php echo $solicitud['id'] ?>" onclick="eliminar('<?php echo $solicitud['id'] ?>')">
+												<a href="edit-categoria?idcategoria=<?php echo $solicitud['id_categoria'] ?>" target="_self"><span class="badge bg-primary"><i class="fas fa-edit"></i>Editar</span></a>
+												<span class="badge bg-danger" id="<?php echo $solicitud['id_categoria'] ?>" onclick="eliminar('<?php echo $solicitud['id_categoria'] ?>')">
 													<i class="fas fa-trash"></i>Eliminar</span>
 											</td>
 										</tr>
@@ -177,7 +162,7 @@ if (isset($_GET['menu'])) {
 								</tbody>
 							</table>
 							<div class="col-12 d-flex justify-content-end">
-								<a href="new-plato" class="btn btn-primary me-1 mb-1">Nuevo Producto</a>
+								<a href="new-categoria" class="btn btn-primary me-1 mb-1">Nueva Categoría</a>
 								<a href="dashboard">
 									<div class="btn btn-secondary me-1 mb-1">Regresar</div>
 								</a>
@@ -197,11 +182,11 @@ if (isset($_GET['menu'])) {
 				Swal.fire({
 					icon: 'success',
 					title: '¡Producto Eliminado!',
-					text: 'El Producto fue eliminado correctamente',
+					text: 'La categoría fue eliminado correctamente',
 					position: 'center',
 					showConfirmButton: true
 				}).then(function () {
-					// window.location = 'menu_admin.php';
+					// window.location = 'menu_categoria.php';
 				});
 			</script>";
 			} elseif ($_GET['del'] == 0) {
@@ -210,16 +195,16 @@ if (isset($_GET['menu'])) {
 				Swal.fire({
 					icon: 'error',
 					title: 'Oops...',
-					text: 'El Producto no se pudo eliminar'
+					text: 'La categoría no se pudo eliminar'
 				}).then(function () {
-					// window.location = 'menu_admin.php';
+					// window.location = 'menu_categoria.php';
 				});
 				</script>";
 			}
 		}
 		?>
 		<script>
-			function eliminar(idplato) {
+			function eliminar(idcategoria) {
 				console.log("eliminar");
 				Swal.fire({
 					title: 'Seguro(a)?',
@@ -232,7 +217,7 @@ if (isset($_GET['menu'])) {
 					cancelButtonText: 'Cancelar'
 				}).then((result) => {
 					if (result.isConfirmed) {
-						window.location = 'inc/models/delete.php?delete=true&idplato=' + idplato;
+						window.location = 'inc/models/delete.php?delete=true&idcategoria=' + idcategoria;
 					} else if (result.isDenied) {
 						Swal.fire('Changes are not saved', '', 'info')
 					}

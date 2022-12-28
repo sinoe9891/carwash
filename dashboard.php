@@ -3,18 +3,15 @@ date_default_timezone_set('America/Tegucigalpa');
 include 'inc/templates/header.php';
 // include 'inc/sesiones.php';
 session_start();
-// if (!isset($_SESSION['session'])) {
-// 	// header('Location: login.php');
-// 	echo $_SESSION['session'];
-// 	exit;
-// }
-$name = $_SESSION['nombre_usuario'];
-// echo "<pre>";
-// print_r($_SESSION);
-// echo "</pre>";
-// echo $_SESSION['login'];
-// print_r($_SESSION);
-// print_r($_POST);
+if (!isset($_SESSION['nombre_usuario'])) {
+	header('Location: login.php');
+	// echo $_SESSION['session'];
+	exit;
+}else{
+	$name = $_SESSION['nombre_usuario'];
+}
+
+
 $today = getdate();
 $hora = $today["hours"];
 if ($hora < 6) {
@@ -79,7 +76,7 @@ if ($hora < 6) {
 							<a href="mesas">
 								<div class="p-4">
 									<img class="iconomesa" src="img/mesa.svg" alt="">
-									<h5>Departamentos</h5>
+									<h5>Colaboradores</h5>
 								</div>
 							</a>
 						</div>
@@ -91,6 +88,17 @@ if ($hora < 6) {
 									<img src="img/iconos-03.svg" alt="" height="48px" style="margin: 0 0 24px;">
 									<!-- <i class="fa fa-3x fa-utensils text-primary mb-4"></i> -->
 									<h5>Productos</h5>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+						<div class="service-item rounded pt-3">
+							<a href="menu_categoria">
+								<div class="p-4">
+									<img src="img/iconos-03.svg" alt="" height="48px" style="margin: 0 0 24px;">
+									<!-- <i class="fa fa-3x fa-utensils text-primary mb-4"></i> -->
+									<h5>Categorías</h5>
 								</div>
 							</a>
 						</div>

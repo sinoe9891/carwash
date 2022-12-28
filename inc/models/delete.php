@@ -75,3 +75,18 @@ if (isset($_GET['delete']) && isset($_GET['idplato'])) {
 		}
 	}
 }
+
+if (isset($_GET['delete']) && isset($_GET['idcategoria'])) {
+	$accion = $_GET['delete'];
+	$id = $_GET['idcategoria'];
+	if ($accion === 'true') {
+		$sql = "DELETE FROM `categorias_menu` WHERE `categorias_menu`.`id_categoria` = '$id'";
+		if (mysqli_query($conn, $sql)) {
+			echo 'Insertó';
+			header('Location: ../../menu_categoria?del=1');
+		} else {
+			header('Location: ../../menu_categoria?del=0');
+			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+		}
+	}
+}

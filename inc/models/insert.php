@@ -69,7 +69,7 @@ if ($accion === 'newUsuario') {
 	}
 }
 
-if ($accion === 'newMesa') {
+if ($accion === 'newasignacion') {
 	include '../conexion.php';
 	echo $_POST['numero_mesa'];
 	echo $name = $_POST['usuario'];
@@ -79,17 +79,107 @@ if ($accion === 'newMesa') {
 
 	//Si el usuario existe verificar el password
 	echo 'Procede a Insertar';
-	$sql = "INSERT INTO `mesas` (`id`, `numero_mesa`, `id_mesero`, `estado_mesa`, `asignada`) VALUES (NULL, '$numero_mesa', '$id_mesero', '$estado', '1');";
+	$sql = "INSERT INTO `mesas` (`id_asignacion`, `numero_mesa`, `id_mesero`, `estado_mesa`, `asignada`) VALUES (NULL, '$numero_mesa', '$id_mesero', '$estado', '1');";
 	if (mysqli_query($conn, $sql)) {
 		echo 'Insertó';
 		header('Location: ../../new-mesa.php?add=1');
-	} else {
+	} else { 
 		header('Location: ../../new-mesa.php?add=0');
 		echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 	}
 }
 
 $imagen = '';
+
+if ($accion === 'newCategoria') {
+	include '../conexion.php';
+	$nombrecategoria = $_POST['nombrecategoria'];
+	$estado = $_POST['estado'];
+	// $url = $_POST['url'];
+	$descripcion = $_POST['descripcion'];
+	$imagen = $_FILES['imagen']['name'];
+	// echo $url = $_POST['imagen'];
+	echo $fechaActual = date('dmy-h-i-s');
+	if (isset($_POST['precioferta'])) {
+		$preciooferta = $_POST['precioferta'];
+		if ($preciooferta == '') {
+			$oferta = 0;
+			$preciooferta = 0;
+		} else {
+			$oferta = 1;
+		}
+	} else {
+		$oferta = 0;
+		$preciooferta = 0;
+	}
+	// $ruta = 'D:/xampp7.2/htdocs/personales/proyecto-conn/images/'.$imagen;
+	$rutaproductos = '/Applications/XAMPP/xamppfiles/htdocs/personales/carwash/img/categorias/';
+
+	if (file_exists($rutaproductos)) {
+		echo "<br> La carpeta " . $rutaproductos . " ya existe<br>";
+		$tipo = $_FILES['imagen']['type'];
+		$tamano = $_FILES['imagen']['size'];
+		$temp = $_FILES['imagen']['tmp_name'];
+		list($base, $extension) = explode('.', $imagen);
+		$newname = implode('.', [$fechaActual, $extension]);
+		move_uploaded_file($temp, "$rutaproductos/$newname");
+		$ruta = '/Applications/XAMPP/xamppfiles/htdocs/personales/carwash/img/categorias/' . $newname;
+		// Existe la image?
+		if (file_exists($ruta)) {
+			echo "<br>La imagen $ruta ya existe<br>";
+			//Cambiamos los permisos del archivo a 777 para poder modificarlo posteriormente
+			chmod($rutaproductos, 0777);
+			// Mover el archivo a la carpeta
+			list($base, $extension) = explode('.', $imagen);
+			$newname = implode('.', [$base, $fechaActual, $extension]);
+			move_uploaded_file($temp, "$rutaproductos/$newname");
+			// move_uploaded_file($temp, $ruta);
+			chmod($ruta, 0777);
+		} else {
+			echo "<br>La imagen $ruta no existe<br>";
+			chmod($rutaproductos, 0777);
+			// Mover el archivo a la carpeta
+			list($base, $extension) = explode('.', $imagen);
+			$newname = implode('.', [$fechaActual, $extension]);
+			move_uploaded_file($temp, "$rutaproductos/$newname");
+			// move_uploaded_file($temp, $ruta);
+		}
+	} else {
+		echo "<br>El fichero $rutaproductos no existe, se procedé a crear<br>";
+
+		mkdir($rutaproductos, 0777);
+		chmod($rutaproductos, 0777);
+		$tipo = $_FILES['imagen']['type'];
+		$tamano = $_FILES['imagen']['size'];
+		$temp = $_FILES['imagen']['tmp_name'];
+		list($base, $extension) = explode('.', $imagen);
+		$newname = implode('.', [$fechaActual, $extension]);
+		move_uploaded_file($temp, "$rutaproductos/$newname");
+		$ruta = '/Applications/XAMPP/xamppfiles/htdocs/personales/carwash/img/categorias/' . $newname;
+
+		// Existe la image?
+		if (file_exists($ruta)) {
+			echo "<br>La imagen $newname se procedió a crearse<br>";
+		} else {
+			echo "<br>La imagen $ruta no se creó<br>";
+		}
+		//Cambiamos los permisos del archivo a 777 para poder modificarlo posteriormente
+		chmod($ruta, 0777);
+		move_uploaded_file($temp, $ruta);
+	}
+	//Mostramos el mensaje de que se ha subido co éxito
+	//Si el usuario existe verificar el password
+	// echo 'Procede a Insertar';
+	$sql = "INSERT INTO `categorias_menu` (`id_categoria`, `nombre_categoria`, `descripcion`, `icono`, `estado`) VALUES (NULL, '$nombrecategoria', '$descripcion', 'img/categorias/$newname', '$estado')";
+	if (mysqli_query($conn, $sql)) {
+		echo 'Insertó';
+		header('Location: ../../new-categoria.php?add=1');
+	} else {
+		header('Location: ../../new-categoria.php?add=0');
+		echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+	}
+}
+
 if ($accion === 'newPlato') {
 	include '../conexion.php';
 	$nombreplato = $_POST['nombreplato'];
@@ -114,15 +204,15 @@ if ($accion === 'newPlato') {
 		$oferta = 0;
 		$preciooferta = 0;
 	}
-	// $ruta = 'D:/xampp7.2/htdocs/ceutec/proyecto-conn/images/'.$imagen;
-	$rutaproductos = '/Applications/XAMPP/xamppfiles/htdocs/ceutec/ferreteria/img/productos/';
+	// $ruta = 'D:/xampp7.2/htdocs/personales/proyecto-conn/images/'.$imagen;
+	$rutaproductos = '/Applications/XAMPP/xamppfiles/htdocs/personales/carwash/img/productos/';
 
 	if (file_exists($rutaproductos)) {
-		echo "<br> La carpeta ". $rutaproductos." ya existe<br>";
+		echo "<br> La carpeta " . $rutaproductos . " ya existe<br>";
 		$tipo = $_FILES['imagen']['type'];
 		$tamano = $_FILES['imagen']['size'];
 		$temp = $_FILES['imagen']['tmp_name'];
-		$ruta = '/Applications/XAMPP/xamppfiles/htdocs/ceutec/ferreteria/img/productos/' . $imagen;
+		$ruta = '/Applications/XAMPP/xamppfiles/htdocs/personales/carwash/img/productos/' . $imagen;
 		// Existe la image?
 		if (file_exists($ruta)) {
 			echo "<br>La imagen $ruta ya existe<br>";
@@ -151,7 +241,7 @@ if ($accion === 'newPlato') {
 		$tipo = $_FILES['imagen']['type'];
 		$tamano = $_FILES['imagen']['size'];
 		$temp = $_FILES['imagen']['tmp_name'];
-		$ruta = '/Applications/XAMPP/xamppfiles/htdocs/ceutec/ferreteria/img/productos/' . $newname;
+		$ruta = '/Applications/XAMPP/xamppfiles/htdocs/personales/carwash/img/productos/' . $newname;
 
 		// Existe la image?
 		if (file_exists($ruta)) {

@@ -4,7 +4,13 @@ include 'inc/templates/header.php';
 include 'inc/conexion.php';
 // include 'inc/sesiones.php';
 session_start();
-$name = $_SESSION['nombre_usuario'];
+if (!isset($_SESSION['nombre_usuario'])) {
+	header('Location: login.php');
+	// echo $_SESSION['session'];
+	exit;
+} else {
+	$name = $_SESSION['nombre_usuario'];
+}
 $today = getdate();
 $hora = $today["hours"];
 if ($hora < 6) {
@@ -55,72 +61,151 @@ if ($hora < 6) {
 			<div class="container">
 				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
 					<h5 class="section-title ff-secondary text-center text-primary fw-normal">Administrar</h5>
-					<h1 class="mb-5">Departamentos</h1>
+					<h1 class="mb-5">Colaboradores</h1>
 				</div>
 				<section class="section clientes">
 					<div class="card">
 						<div class="card-body">
 							<div class="row g-4">
 								<?php
-								$consulta = $conn->query("SELECT * FROM mesas ORDER BY numero_mesa ASC");
+								$consulta = $conn->query("SELECT * FROM mesas a ORDER BY numero_mesa ASC");
 								$contador = 1;
-								while ($solicitud = $consulta->fetch_array()) {
-									$idmesa = $solicitud['id'];
-									$numero_mesa = $solicitud['numero_mesa'];
-									$estado = $solicitud['estado_mesa'];
-									$asignada = $solicitud['asignada'];
-									if ($estado == 'a') {
-										$estadoMesa = 'Habilitado';
-										$color = 'bg-success';
-									} elseif ($estado == 'd') {
-										$estadoMesa = 'Deshabilitado';
-										$color = 'bg-secondary';
-									}
+								if ($consulta->num_rows == 0) {
+									$consulta = $conn->query("SELECT * FROM mesas a, main_users b WHERE a.id_mesero = b.id ORDER BY numero_mesa ASC");
+									echo '<h3>No hay asignaciones creadas</h3>';
+									while ($solicitud = $consulta->fetch_array()) {
+										$idmesa = $solicitud['id_asignacion'];
+										$idempleado = $solicitud['id'];
+										$usuario_name = $solicitud['usuario_name'];
+										$apellidos = $solicitud['apellidos'];
+										$numero_mesa = $solicitud['numero_mesa'];
+										$estado = $solicitud['estado_mesa'];
+										$asignada = $solicitud['asignada'];
+										if ($estado == 'a') {
+											$estadoMesa = 'Habilitado';
+											$color = 'bg-success';
+										} elseif ($estado == 'd') {
+											$estadoMesa = 'Deshabilitado';
+											$color = 'bg-secondary';
+										}
 								?>
-									<div class="col-lg-3 col-sm-6 wow fadeInUp">
-										<div style="text-align:center;">
-											<a href="edit-mesa?idm=<?php echo $idmesa; ?>">
-												<img class="mesa" width='200px' src="img/mesa.svg" alt="">
-												<p>Departamento <?php echo $numero_mesa; ?></p>
-												<a href="edit-mesa?idm=<?php echo $solicitud['id'] ?>" target="_self">
-													<?php
-													if ($asignada == 0) {
-														echo '<span class="badge bg-danger">Sin Mesero</span>';
-													} else if ($estado == 'd') {
-														echo '<span class="badge bg-danger">Deshabilitada</span>';
-													} else {
-														echo '<span class="badge bg-success"></span>';
-													};
-													?>
-													<span class="badge bg-primary">
-														<i class="fas fa-edit"></i>
+										<div class="col-lg-3 col-sm-6 wow fadeInUp">
+											<div style="text-align:center;">
+												<a href="edit-mesa?idm=<?php echo $idmesa; ?>">
+													<img class="mesa" width='200px' src="img/mesa.svg" alt="">
+													<p>Espacio <?php echo $numero_mesa . '<br>' . $usuario_name . ' ' . $apellidos; ?></p>
+													<a href="edit-mesa?idm=<?php echo $idmesa ?>" target="_self">
 														<?php
 														if ($asignada == 0) {
-															echo 'Asignar';
+															echo '<span class="badge bg-danger">Sin Mesero</span>';
+														} else if ($estado == 'd') {
+															echo '<span class="badge bg-danger">Deshabilitada</span>';
 														} else {
-															echo 'Editar';
+															echo '<span class="badge bg-success"></span>';
 														};
 														?>
+														<span class="badge bg-primary">
+															<i class="fas fa-edit"></i>
+															<?php
+															if ($asignada == 0) {
+																echo 'Asignar';
+															} else {
+																echo 'Editar';
+															};
+															?>
+													</a>
+													<?php
+													if ($asignada == 0) {
+														echo '</span><span class="badge bg-danger" id="' . $idmesa . '" onclick="eliminar(' . $idmesa . ')">
+														<i class="fas fa-trash"></i></span>';
+													} else {
+														echo '';
+													};
+													?>
+
 												</a>
-												<?php
-												if ($asignada == 0) {
-													echo '</span><span class="badge bg-danger" id="'. $solicitud['id'] . '" onclick="eliminar(' . $idmesa . ')">
-													<i class="fas fa-trash"></i></span>';
-												} else {
-													echo '';
-												};
-												?>
-												
-											</a>
+											</div>
 										</div>
-									</div>
+
+									<?php
+									}
+								} else {
+									$test = $conn->query("SELECT * FROM mesas a, main_users b WHERE a.id_mesero = b.id ORDER BY numero_mesa ASC");
+									if ($test->num_rows == 0) {
+										$consulta = $conn->query("SELECT * FROM mesas a ORDER BY numero_mesa ASC");
+										$bandera = false;
+									} else {
+										$consulta = $conn->query("SELECT * FROM mesas a, main_users b WHERE a.id_mesero = b.id ORDER BY numero_mesa ASC");
+										$bandera = true;
+									}
+									while ($solicitud = $consulta->fetch_array()) {
+										if ($bandera) {
+											$idempleado = $solicitud['id'];
+											$usuario_name = $solicitud['usuario_name'];
+											$apellidos = $solicitud['apellidos'];
+											$nombre = $usuario_name . ' ' . $apellidos;
+										}else{
+											$nombre = '';
+										}
+										$idmesa = $solicitud['id_asignacion'];
+										$numero_mesa = $solicitud['numero_mesa'];
+										$estado = $solicitud['estado_mesa'];
+										$asignada = $solicitud['asignada'];
+										if ($estado == 'a') {
+											$estadoMesa = 'Habilitado';
+											$color = 'bg-success';
+										} elseif ($estado == 'd') {
+											$estadoMesa = 'Deshabilitado';
+											$color = 'bg-secondary';
+										}
+									?>
+										<div class="col-lg-3 col-sm-6 wow fadeInUp">
+											<div style="text-align:center;">
+												<a href="edit-mesa?idm=<?php echo $idmesa; ?>">
+													<img class="mesa" width='200px' src="img/mesa.svg" alt="">
+													<p>Espacio <?php echo $numero_mesa; echo '<br>' . $nombre; ?></p>
+													<a href="edit-mesa?idm=<?php echo $idmesa ?>" target="_self">
+														<?php
+														if ($asignada == 0) {
+															echo '<span class="badge bg-danger">Sin Colaborador</span>';
+														} else if ($estado == 'd') {
+															echo '<span class="badge bg-danger">Deshabilitada</span>';
+														} else {
+															echo '<span class="badge bg-success"></span>';
+														};
+														?>
+														<span class="badge bg-primary">
+															<i class="fas fa-edit"></i>
+															<?php
+															if ($asignada == 0) {
+																echo 'Asignar';
+															} else {
+																echo 'Editar';
+															};
+															?>
+													</a>
+													<?php
+													if ($asignada == 0) {
+														echo '</span><span class="badge bg-danger" id="' . $idmesa . '" onclick="eliminar(' . $idmesa . ')">
+													<i class="fas fa-trash"></i></span>';
+													} else {
+														echo '';
+													};
+													?>
+
+												</a>
+											</div>
+										</div>
 								<?php
+									}
 								}
+
+
 								?>
 							</div>
 						</div>
 						<div class="col-12 d-flex justify-content-end wow fadeInUp" data-wow-delay="0.1s">
-							<a href="new-mesa" class="btn btn-primary me-1 mb-1">Nuevo Departamento</a>
+							<a href="new-mesa" class="btn btn-primary me-1 mb-1">Nuevo Lavador</a>
 							<a href="dashboard">
 								<div class="btn btn-secondary me-1 mb-1">Regresar</div>
 							</a>
