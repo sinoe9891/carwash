@@ -42,7 +42,7 @@ if ($hora < 6) {
 		<!-- Navbar & Hero Start -->
 		<div class="container-xxl position-relative p-0">
 			<?php
-			include 'inc/templates/navbar-mesero.php';
+			include 'inc/templates/navbar-admin.php';
 			?>
 
 			<div class="container-xxl py-5 bg-dark hero-header mb-5">
@@ -58,8 +58,6 @@ if ($hora < 6) {
 			</div>
 		</div>
 		<!-- Navbar & Hero End -->
-
-
 		<!-- Menu Start -->
 		<div class="container-xxl py-5">
 			<div class="container">
@@ -247,9 +245,9 @@ if ($hora < 6) {
 							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="mesero" value="<?php echo $id_user ?>">
 							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="accion" value="newOrden">
 							<input class="btn btn-primary me-1 mb-1" type="submit" value="Ordenar" name="crearorden">
-							<!-- <a href="usuarios">
+							<a href="mesas_mesero">
 								<div class="btn btn-secondary me-1 mb-1">Regresar</div>
-							</a> -->
+							</a>
 						</div>
 					</form>
 				</div>

@@ -144,7 +144,7 @@ if ($hora < 6) {
 											$usuario_name = $solicitud['usuario_name'];
 											$apellidos = $solicitud['apellidos'];
 											$nombre = $usuario_name . ' ' . $apellidos;
-										}else{
+										} else {
 											$nombre = '';
 										}
 										$idmesa = $solicitud['id_asignacion'];
@@ -162,8 +162,11 @@ if ($hora < 6) {
 										<div class="col-lg-3 col-sm-6 wow fadeInUp">
 											<div style="text-align:center;">
 												<a href="edit-mesa?idm=<?php echo $idmesa; ?>">
-													<img class="mesa" width='200px' src="img/mesa.svg" alt="">
-													<p>Espacio <?php echo $numero_mesa; echo '<br>' . $nombre; ?></p>
+
+													<i class="fa fa-3x fas fa-car-garage text-primary mb-4"></i>
+
+													<p>Espacio <?php echo $numero_mesa;
+																echo '<br>' . $nombre; ?></p>
 													<a href="edit-mesa?idm=<?php echo $idmesa ?>" target="_self">
 														<?php
 														if ($asignada == 0) {

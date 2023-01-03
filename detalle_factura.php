@@ -221,8 +221,8 @@ if ($result = mysqli_query($conn, $sql)) {
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="grantotal" value="<?php echo $grantotal ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="impuestototal" value="<?php echo $impuestototal ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="accion" value="facturacrear">
-									<div class="btn btn-info me-1 mb-1" style='<?php echo $verfactura ?>' onclick="verFactura()" value="verfactura">Ver Factura</div>
-									<div class="btn btn-primary me-1 mb-1" style='<?php echo $ver ?>' onclick="enviarFactura()" value="Cocinar">Pagar</div>
+									<div class="btn btn-info me-1 mb-1" style='<?php echo $verfactura ?>' onclick="verFactura()" value="verfactura"><i class="fas fa-file-alt"></i>Ver Factura</div>
+									<div class="btn btn-primary me-1 mb-1" style='<?php echo $ver ?>' onclick="enviarFactura()" value="Cocinar"></i>Pagar</div>
 									<a href="ordenes_admin">
 										<div class="btn btn-secondary me-1 mb-1">Regresar</div>
 									</a>

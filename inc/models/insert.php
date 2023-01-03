@@ -58,7 +58,7 @@ if ($accion === 'newUsuario') {
 		header('Location: ../../new-usuario.php?error=1');
 	} else {
 		echo 'Procede a Insertar';
-		$sql = "INSERT INTO main_users (`id`, `usuario_name`, `apellidos`, `nickname`, `email_user`, `password`, `role_user`, `estado_user`) VALUES (NULL, '$name', '$apellido', '$nickname', '$email', '$hash_password', $role, '$estado')";
+		$sql = "INSERT INTO main_users (`id`, `usuario_name`, `apellidos`, `nickname`, `email_user`, `password`, `role_user`, `estado_user`, `asignacion`, `no_asignado`) VALUES (NULL, '$name', '$apellido', '$nickname', '$email', '$hash_password', $role, '$estado', '0', '0')";
 		if (mysqli_query($conn, $sql)) {
 			echo 'Insertó';
 			header('Location: ../../new-usuario.php?add=1');
@@ -79,7 +79,7 @@ if ($accion === 'newasignacion') {
 
 	//Si el usuario existe verificar el password
 	echo 'Procede a Insertar';
-	$sql = "INSERT INTO `mesas` (`id_asignacion`, `numero_mesa`, `id_mesero`, `estado_mesa`, `asignada`) VALUES (NULL, '$numero_mesa', '$id_mesero', '$estado', '1');";
+	$sql = "INSERT INTO `mesas` (`id_asignacion`, `numero_mesa`, `id_mesero`, `estado_mesa`, `asignada`, `ocupada`) VALUES (NULL, '$numero_mesa', '$id_mesero', '$estado', '1', 0);";
 	if (mysqli_query($conn, $sql)) {
 		echo 'Insertó';
 		header('Location: ../../new-mesa.php?add=1');

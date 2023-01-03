@@ -37,18 +37,23 @@ function validarRegistro(e) {
                     // let respuesta = xhr.responseText;
                     let respuesta = JSON.parse(xhr.responseText);
                     console.log(respuesta);
+                    console.log(respuesta.roles);
+
                     if (respuesta.respuesta === 'correcto') {
                         //si es un nuevo usuario 
 						if (respuesta.tipo === 'login' && respuesta.role === 1) {
 							//redireccionar a la pagina principal
 							console.log(respuesta);
 							window.location.href = 'dashboard';
-							
 						}else if (respuesta.tipo === 'login' && respuesta.role === 3) {
 							//redireccionar a la pagina principal
 							console.log(respuesta);
 							window.location.href = 'mesas_mesero';
 							
+						}else if (respuesta.tipo === 'login' && respuesta.role === 4) {
+							//redireccionar a la pagina principal
+							console.log(respuesta);
+							window.location.href = 'mesas_mesero';
 						} else if (respuesta.tipo == 'crear') {
                             Swal.fire({
 								icon: 'success',

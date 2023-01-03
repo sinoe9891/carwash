@@ -41,7 +41,7 @@ if ($hora < 6) {
 		<!-- Navbar & Hero Start -->
 		<div class="container-xxl position-relative p-0">
 			<?php
-			include 'inc/templates/navbar-mesero.php';
+			include 'inc/templates/navbar-admin.php';
 			?>
 
 			<div class="container-xxl py-5 bg-dark hero-header mb-5">
@@ -62,7 +62,7 @@ if ($hora < 6) {
 			<div class="container">
 				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
 					<h5 class="section-title ff-secondary text-center text-primary fw-normal">Administrar</h5>
-					<h1 class="mb-5">Colaboradores</h1>
+					<h1 class="mb-5">Espacios</h1>
 				</div>
 				<section class="section clientes">
 					<div class="card">
@@ -71,39 +71,43 @@ if ($hora < 6) {
 								<?php
 								$consulta = $conn->query("SELECT * FROM mesas WHERE id_mesero = $iduser ORDER BY numero_mesa ASC");
 								$contador = 1;
-								while ($solicitud = $consulta->fetch_array()) {
-									$idmesa = $solicitud['id_asignacion'];
-									$numero_mesa = $solicitud['numero_mesa'];
-									$estado = $solicitud['estado_mesa'];
-									$asignada = $solicitud['asignada'];
-									if ($estado == 'a') {
-										$estadoMesa = 'Habilitado';
-										$color = 'bg-success';
-									} elseif ($estado == 'd') {
-										$estadoMesa = 'Deshabilitado';
-										$color = 'bg-secondary';
-									}
-								?>
-									<div class="col-sm-4 wow fadeInUp">
-										<div style="text-align:center;">
-											<a href="menu_mesero?idm=<?php echo $idmesa; ?>">
-												<img class="mesa" width='200px' src="img/mesa.svg" alt="">
-												<p>Espacio <?php echo $numero_mesa; ?></p>
-											</a>
+								$filas = $consulta->num_rows;
+								if ($filas > 0) {
+									while ($solicitud = $consulta->fetch_array()) {
+										$idmesa = $solicitud['id_asignacion'];
+										$numero_mesa = $solicitud['numero_mesa'];
+										$estado = $solicitud['estado_mesa'];
+										$asignada = $solicitud['asignada'];
+										if ($estado == 'a') {
+											$estadoMesa = 'Habilitado';
+											$color = 'bg-success';
+										} elseif ($estado == 'd') {
+											$estadoMesa = 'Deshabilitado';
+											$color = 'bg-secondary';
+										}
+									?>
+										<div class="col-sm-4 wow fadeInUp">
+											<div style="text-align:center;">
+												<a href="menu_mesero?idm=<?php echo $idmesa; ?>">
+												<i class="fa fa-3x fas fa-car-garage text-primary mb-4"></i>
+													<p>Espacio <?php echo $numero_mesa; ?></p>
+												</a>
+											</div>
 										</div>
-									</div>
-								<?php
+									<?php
+									}
+								}else{
+									echo '<div style="text-align:center;"><h3>No tienes Espacios asignados</h3></div>';
 								}
 								?>
-								
+							</div>
+							<div class="col-12 d-flex justify-content-end">
+								<!-- <a href="new-mesa" class="btn btn-primary me-1 mb-1">Nueva Mesa</a> -->
+								<a href="dashboard">
+									<div class="btn btn-secondary me-1 mb-1">Regresar</div>
+								</a>
 							</div>
 						</div>
-						<!-- <div class="col-12 d-flex justify-content-end wow fadeInUp" data-wow-delay="0.1s">
-							<a href="new-mesa" class="btn btn-primary me-1 mb-1">Nueva Mesa</a>
-							<a href="dashboard">
-								<div class="btn btn-secondary me-1 mb-1">Regresar</div>
-							</a>
-						</div> -->
 					</div>
 				</section>
 			</div>
