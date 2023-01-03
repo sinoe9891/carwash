@@ -206,8 +206,6 @@ if ($result = mysqli_query($conn, $sql)) {
 									</thead>
 									<?php
 									// echo '<br>Total' . $total . '<br>';
-
-
 									?>
 
 								</table>
@@ -226,8 +224,6 @@ if ($result = mysqli_query($conn, $sql)) {
 									<a href="ordenes_admin">
 										<div class="btn btn-secondary me-1 mb-1">Regresar</div>
 									</a>
-
-
 								</div>
 							</form>
 						</div>

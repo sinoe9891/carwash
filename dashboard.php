@@ -174,7 +174,6 @@ if ($hora < 6) {
 				</div>
 			</div>
 		<?php
-
 		}else{
 			?>
 			<div class="container-xxl py-5">
