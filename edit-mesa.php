@@ -6,6 +6,7 @@ include 'inc/functionsquery.php';
 // include 'inc/sesiones.php';
 session_start();
 $name = $_SESSION['nombre_usuario'];
+
 $today = getdate();
 $hora = $today["hours"];
 if ($hora < 6) {

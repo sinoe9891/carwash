@@ -33,7 +33,7 @@ if ($hora < 6) {
 		<!-- Navbar & Hero Start -->
 		<div class="container-xxl position-relative p-0">
 			<?php
-			include 'inc/templates/navbar-mesero.php';
+				include 'inc/templates/navbar-admin.php';
 			?>
 
 			<div class="container-xxl py-5 bg-dark hero-header mb-5">
@@ -61,7 +61,10 @@ if ($hora < 6) {
 									<tr>
 										<th>No.</th>
 										<th>Producto</th>
+										<th>Cantidad</th>
 										<th>Precio</th>
+										<th>Descuento</th>
+										<th>Subtotal</th>
 										<th>Estado</th>
 										<!-- <th>Acciones</th> -->
 									</tr>
@@ -69,13 +72,16 @@ if ($hora < 6) {
 								<tbody>
 									<?php
 									// while ($solicitud = $consulta->fetch_array()) {
-									$consulta = $conn->query("SELECT * FROM orden_detalle a, menu b, ordenes c WHERE a.id_orden_detalle = $ordenid and b.id = a.id_plato and a.id_orden_detalle = c.id_orden ORDER BY b.nombre ASC");
+									$consulta = $conn->query("SELECT * FROM orden_detalle a, ordenes c WHERE a.id_orden_detalle = $ordenid and a.id_orden_detalle = c.id_orden ORDER BY a.descripcion ASC;");
 									$contador = 1;
 									$total = 0;
 									while ($solicitud = $consulta->fetch_array()) {
 										$id_orden = $solicitud['id_orden'];
-										$nombre = $solicitud['nombre'];
+										$descripcion = $solicitud['descripcion'];
 										$precio = $solicitud['precio_plato'];
+										$cantidad = $solicitud['cantidad'];
+										$descuento = $solicitud['descuento'];
+										$subtotal = $solicitud['subtotal'];
 										// $apellidos = $solicitud['apellidos'];
 										// $username = $solicitud['nickname'];
 										// $email = $solicitud['email_user'];
@@ -90,8 +96,11 @@ if ($hora < 6) {
 									?>
 										<tr id="solicitud:<?php echo $solicitud['id_orden'] ?>">
 											<td><?php echo $contador++; ?></td>
-											<td><?php echo $nombre ?></td>
-											<td><?php echo 'L.' . $precio ?></td>
+											<td><?php echo $descripcion ?></td>
+											<td><?php echo $cantidad ?></td>
+											<td><?php echo 'L.' . $precio * $cantidad ?></td>
+											<td><?php echo 'L.' . $descuento ?></td>
+											<td><?php echo 'L.' . $subtotal ?></td>
 											<td><?php echo '<span class="badge ' . $color . '">' . $estadoUser . '</span>' ?></td>
 											<td>
 												<!-- <a href="edit-usuario?ID=<?php echo $solicitud['id_orden'] ?>" target="_self"><span class="badge bg-primary"><i class="fas fa-edit"></i>Editar</span></a> -->
@@ -102,26 +111,30 @@ if ($hora < 6) {
 											</td>
 										</tr>
 									<?php
-									$total += $precio;
+									$total += $subtotal;
 									}
 									?>
 								</tbody>
 								<thead>
 									<tr>
 										<th></th>
+										<th></th>
+										<th></th>
+										<th></th>
 										<th>Total</th>
 										<th><?php 
 										echo 'L.' . sprintf('%.2f',$total);
 										?></th>
 										<th></th>
-										<th></th>
 									</tr>
 								</thead>
 							</table>
 							<div class="col-12 d-flex justify-content-end">
-								<!-- <input type="submit" class="btn btn-primary me-1 mb-1" name="name" value="Cocinar"> -->
+								<a href="ordenes">
+									<div class="btn btn-primary me-1 mb-1">Ver Ordenes</div>
+								</a>
 								<a href="mesas_mesero">
-									<div class="btn btn-secondary me-1 mb-1">Regresar a Mesas</div>
+									<div class="btn btn-secondary me-1 mb-1">Regresar</div>
 								</a>
 							</div>
 						</div>

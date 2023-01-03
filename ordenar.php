@@ -25,19 +25,26 @@ $ultimaorden = 0;
 
 $sql = "SELECT * FROM `ordenes` order by id_orden DESC LIMIT 1";
 
-if ($result=mysqli_query($conn,$sql)) {
-    $rowcount=mysqli_num_rows($result);
+if ($result = mysqli_query($conn, $sql)) {
+	$rowcount = mysqli_num_rows($result);
 	if ($rowcount > 0) {
 		while ($solicitud = $consulta->fetch_array()) {
 			$ultimaorden = $solicitud['id_orden'];
 		}
-	}else{
+	} else {
 		$ultimaorden = 0;
 	}
 }
 
 
 ?>
+<style>
+	input[type="text"] {
+		background: transparent;
+		border: none;
+		color: #777676;
+	}
+</style>
 
 <body>
 	<div class="container-xxl bg-white p-0">
@@ -77,17 +84,20 @@ if ($result=mysqli_query($conn,$sql)) {
 						<div class="card-body">
 							<form action="inc/models/insert.php" name="formulario" method="post">
 								<H1>Orden #<?php echo $ultimaorden + 1 ?></H1>
-								<table class="table table-striped" id="table1">
+								<table class="table table-striped" id="table1" >
 									<thead>
 										<tr>
 											<th>No.</th>
 											<th>Producto</th>
-											<th>Precio</th>
+											<th>Cantidad</th>
+											<th>Precio Unitario</th>
+											<th>Oferta</th>
+											<th>Subtotal</th>
 											<!-- <th>Estado</th> -->
 											<!-- <th>Acciones</th> -->
 										</tr>
 									</thead>
-									<tbody>
+									<tbody onclick="sumatoria(this)" id="tablebody">
 										<?php
 										if ($accion === 'newOrden') {
 											// include '../conexion.php';
@@ -101,6 +111,7 @@ if ($result=mysqli_query($conn,$sql)) {
 											$date = date('Y-m-d', time());
 											$total = 0;
 											$contador = 1;
+											$elemento = 0;
 											foreach ($_POST['menu'] as $key => $val) {
 												$consulta = $conn->query("SELECT * FROM `menu` WHERE id = $val");
 												// $contador = 1;
@@ -108,18 +119,32 @@ if ($result=mysqli_query($conn,$sql)) {
 													$nombre = $solicitud['nombre'];
 													$id_plato = $solicitud['id'];
 													$precio = $solicitud['precio'];
-													//insert into
-													$total +=  $precio;
+													$oferta = $solicitud['precio_oferta'];
+													if ($oferta == 0.00) {
+														$totaloferta = 0.00;
+													}else{
+														$totaloferta = $precio - $oferta;
+													}
+													// $totaloferta = $precio - $oferta;
+													$subtotal = ($precio - $totaloferta);
+													$total +=  $subtotal;
 										?>
 
-													<tr id="solicitud:<?php echo $solicitud['id'] ?>">
+													<tr id="solicitud:<?php echo $solicitud['id'] ?>" class="elemento<?php echo $elemento++ ?>" onclick="acceso(this);">
 														<td><?php echo $contador++; ?></td>
 														<td><?php echo $nombre ?></td>
-														<td><?php echo 'L.' . $precio ?></td>
+														<td><input type="number" class='cantidad<?php echo $elemento ?>' name="cantidad[]" value="1" placeholder="" onclick="click(this)"></td>
+														<td>L.
+															<input type="text" name="precio" id="precio<?php echo $elemento ?>" value="<?php echo $precio ?>" readonly>
+														</td>
+														<td>L.
+															<input type="text" name="descuento" id="totaloferta<?php echo $elemento ?>" value="<?php echo $totaloferta ?>" readonly>
+														</td>
+														<td>L.
+															<input type="text" name="subtotal" class='subtotal' id="subtotal<?php echo $elemento ?>" value="<?php echo $subtotal ?>">
+														</td>
 														<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="menuplato[]" value="<?php echo $id_plato ?>">
-
 												<?php
-
 												}
 											}
 												?>
@@ -127,15 +152,13 @@ if ($result=mysqli_query($conn,$sql)) {
 									<thead>
 										<tr>
 											<th></th>
+											<th></th>
+											<th></th>
+											<th></th>
 											<th>Total</th>
-											<th><?php
-
-
-												echo 'L.' . sprintf('%.2f', $total);
-
-
-
-												?></th>
+											<th>
+												L. <input type="text" name="supertotal" id="supertotal" value="<?php echo sprintf('%.2f', $total) ?>">
+											</th>
 										</tr>
 									</thead>
 								<?php
@@ -151,7 +174,7 @@ if ($result=mysqli_query($conn,$sql)) {
 									<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="accion" value="newOrden">
 									<!-- <input type="submit" class="btn btn-primary me-1 mb-1" name="name" value="Cocinar" onclick="enviarorden()"> -->
 									<div class="btn btn-primary me-1 mb-1" onclick="enviarorden()" value="Cocinar">Ordenar</div>
-									<a href="mesas_mesero">
+									<a href="menu_mesero?idm=<?php echo $idmesa; ?>">
 										<div class="btn btn-secondary me-1 mb-1">Regresar</div>
 									</a>
 
@@ -195,6 +218,41 @@ if ($result=mysqli_query($conn,$sql)) {
 		}
 		?>
 		<script>
+			// console.log(form);
+			function acceso(clase) {
+				let clasefirme = clase.children[2].firstChild.value;
+				clase.addEventListener('click', (event) => {
+					cantidad = 1;
+					cantidad = clase.children[2].childNodes[0].value;
+					let precio = clase.children[3].childNodes[1].value;
+					let totaloferta = clase.children[4].childNodes[1].value;
+					let result = document.getElementById(clase.children[5].childNodes[1].id);
+					let subtotal = cantidad * (precio - totaloferta);
+					result.value = subtotal;
+				});
+			}
+
+			function sumatoria(clase) {
+				console.log(clase);
+				// console.log(clase.children[1].childNodes[1].childNodes[11].childNodes[1].value);
+				let cantidadfilas = clase.children.length;
+				// console.log(cantidadfilas);
+				let array = [];
+				let supertotal = 0;
+				for (let i = 0; i < cantidadfilas; i++) {
+					// console.log(clase.children[i]);
+					let element = clase.children[i].childNodes[11].lastElementChild.value;
+					supertotal += Number(element);
+					let total = document.getElementById('supertotal');
+					total.value = supertotal;
+				}
+
+			}
+
+			let total = document.getElementById('supertotal').value;
+			// console.log(total)
+
+
 			function enviarorden() {
 				console.log("eliminar");
 				Swal.fire({

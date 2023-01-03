@@ -63,15 +63,14 @@ if (isset($_POST['idplato']) && isset($_POST['updateplato'])) {
 	$descripcion = $_POST['descripcion'];
 	if (isset($_POST['precioferta'])) {
 		$preciooferta = $_POST['precioferta'];
-		if ($preciooferta == '') {
+		if ($preciooferta == 0) {
+			echo 'Entró3';
 			$oferta = 0;
-			$preciooferta = 0;
+			$preciooferta = 0.00;
 		} else {
+			echo 'Entró2';
 			$oferta = 1;
 		}
-	} else {
-		$oferta = 0;
-		$preciooferta = 0;
 	}
 
 

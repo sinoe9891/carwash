@@ -74,7 +74,6 @@ if ($accion === 'newOrden') {
 	$mesa = $_POST['mesa'];
 	$mesero = $_POST['mesero'];
 	$checkBox = implode(',', $_POST['menu']);
-
 	echo $mesa.' Mesa</br>';
 	echo $mesero.' Mesero</br>';
 	$DateAndTime = date('Y-m-d h:i:s', time());  
@@ -100,13 +99,13 @@ if ($accion === 'newOrden') {
 			$total +=  $precio;
 			// echo $DateAndTime;
 			// $sql = "INSERT INTO orden_detalle (`id_orden_detalle`, `id_plato`, `precio_plato`, `id_mesero`) VALUES ('$ultimoid', '$val', '$precio', '$mesero')";
-			// if (mysqli_query($conn, $sql)) {
-			// 	echo 'Insertó Orden';
-			// 	header('Location: ../../orden.php?orden='.$ultimoid);
-			// } else {
-			// 	header('Location: ../../orden.php?orden=0');
-			// 	echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-			// }
+			if (mysqli_query($conn, $sql)) {
+				echo 'Insertó Orden';
+				header('Location: ../../orden.php?orden='.$ultimoid);
+			} else {
+				header('Location: ../../orden.php?orden=0');
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 			
 		}
 	}

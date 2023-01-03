@@ -13,10 +13,15 @@ if (isset($_GET['ID'])) {
 	$user_id = $_GET['ID'];
 	include '../inc/conexion.php';
 	// $consulta1 = $conn->query("SELECT * FROM info_cai a, info_empresa b where a.id_empresa = b.id_empresa");
-	$consulta1 = $conn->query("SELECT * FROM `facturas` WHERE no_factura = '$user_id'");
+	$consulta1 = $conn->query("SELECT * FROM `facturas` WHERE id_orden = '$user_id'");
 	//while el id_cuota_pagada
 	while ($row = $consulta1->fetch_assoc()) {
-		$datetime = $row['datetime'];
+
+		// echo $datetime;
+		$datetime = $row['fecha_hora'];
+		$no_factura = $row['no_factura'];
+		$total = $row['total'];
+		$id_mesero = $row['id_mesero'];
 	}
 	$solicitudes = getCobro($user_id);
 	// $len = 16;
@@ -24,12 +29,16 @@ if (isset($_GET['ID'])) {
 	// $new_str2 = str_pad($rango_final, $len, "0", STR_PAD_LEFT);
 	// $cuatro1 = substr($new_str1, 15, 5);
 	// $cuatro2 = substr($new_str2, 15, 5);
-	if ($solicitudes->num_rows > 0) {
-		echo 'hola';
-		while ($row = $solicitudes->fetch_assoc()) {
-			$datetime = $row['datetime'];
+	// if ($solicitudes->num_rows > 0) {
+		// echo $datetime.'<br>';
+		// echo $no_factura.'<br>';
+		// echo $total.'<br>';
+		// echo $id_mesero.'<br>';
+		// echo $user_id;
+		// while ($row = $solicitudes->fetch_assoc()) {
+		// $datetime = $row['datetime'];
 
-			$html .= '<div class="main_factura" >
+		$html .= '<div class="main_factura" >
 			<div class="main-container">
 			<div class="container_factura">
 			<h5>Factura</h5>
@@ -37,7 +46,8 @@ if (isset($_GET['ID'])) {
 			<p>RTN: RTN</p>
 			<p>Tel. +504 3182-8143</p>
 			<hr style="border-style: dashed">
-			<p>FACTURA <span class="factura">' . $user_id . '<span></p>
+			<p>FACTURA <span class="factura">' . $no_factura . '<span></p>
+			<p>ORDEN <span class="factura">' . $user_id . '<span></p>
 			<hr>
 			<p>CAI</p>
 			<p></p>
@@ -51,19 +61,19 @@ if (isset($_GET['ID'])) {
 			<hr>
 			<p>COrreo</p>
 			<hr>
-			<p>Usuario: </p>
-			<p>Fecha: </p>
+			<p>Usuario: ' . $id_mesero . '</p>
+			<p>Fecha: ' . $datetime . '</p>
 			<p>Hora: </p>
 			<hr>
 			<div class="center">
 				<table class="center-factura">
 					<tr>
-						<th>Por L. </th>
+						<th>Por L. ' . $total . '</th>
 						<td></td>
 					</tr>
 					<tr>
 						<th>Fecha</th>
-						<td></td>
+						<td>' . $datetime . '</td>
 					</tr>
 					<tr>
 						<th>Contrato</th>
@@ -74,41 +84,41 @@ if (isset($_GET['ID'])) {
 			<hr>
 			<p>Cliente:</p>
 			<p class="info"></p>
-			<hr>
-			
-			';
-			try {
-				// $mpdf = new \Mpdf\Mpdf(['format' => 'Legal']);
-				// son mm 
-				$mpdf = new \Mpdf\Mpdf(['format' => [75.9989, 355.6]]);
-				$mpdf->adjustFontDescLineheight = 1.2;
-				// $mpdf->SetMargins(10, 250, 10);
-				$mpdf->AddPageByArray([
-					'margin-left' => 2.5,
-					'margin-right' => 2.5,
-					'margin-top' => 11,
-					'margin-bottom' => 0,
-				]);
-				$mpdf->SetAutoPageBreak(true, 25);
-				// $mpdf->debug = true;
-				// ob_end_clean();
-				$mpdf->WriteHTML($stylesheet, 1);
-				$mpdf->WriteHTML($html);
-				$mpdf->Output("Factura.pdf", "D");
-				$nombrefactura = "Factura.pdf";
-				// $mpdf->Output("facturas/" . ucwords(strtolower($nombrefactura)), "F");
-				//si no existe el directorio factura se debe crear el directorio
+			<hr>';
+		try {
+			// $mpdf = new \Mpdf\Mpdf(['format' => 'Legal']);
+			// son mm 
+			$mpdf = new \Mpdf\Mpdf(['format' => [75.9989, 355.6]]);
+			$mpdf->adjustFontDescLineheight = 1.2;
+			// $mpdf->SetMargins(10, 250, 10);
+			$mpdf->AddPageByArray([
+				'margin-left' => 2.5,
+				'margin-right' => 2.5,
+				'margin-top' => 11,
+				'margin-bottom' => 0,
+			]);
+			$mpdf->SetAutoPageBreak(true, 25);
+			// $mpdf->debug = true;
+			// ob_end_clean();
+			$mpdf->WriteHTML($stylesheet, 1);
+			$mpdf->WriteHTML($html);
+			// $mpdf->Output("Factura.pdf", "D");
+			$mpdf->Output("Factura.pdf", "I");
+			// $nombrefactura = "Factura.pdf";
+			// $mpdf->Output("facturas/" . ucwords(strtolower($nombrefactura)), "F");
+			//si no existe el directorio factura se debe crear el directorio
 
-				// $mpdf->Output("Contrato ".$bloque .'-'. $numero .' '. ucwords(strtolower($nombre)) . ".pdf", "D");
-			} catch (\Mpdf\MpdfException $e) { // Note: safer fully qualified exception 
-				//       name used for catch
-				// Process the exception, log, print etc.
-				echo $e->getMessage();
-			}
-			//convertir pdf a jpg
-			// $im = imagecreatefromjpeg('galería/Nota de Duelo '.ucwords(strtolower($row['nombres'].' '.$row['apellidos'])).'.jpg');
-			// $mpdf->Output("galería/Nota de Duelo ".ucwords(strtolower($row['nombres'].' '.$row['apellidos'])).".jpg", "F");
-
+			// $mpdf->Output("Contrato ".$bloque .'-'. $numero .' '. ucwords(strtolower($nombre)) . ".pdf", "D");
+		} catch (\Mpdf\MpdfException $e) { // Note: safer fully qualified exception 
+			//       name used for catch
+			// Process the exception, log, print etc.
+			echo $e->getMessage();
 		}
-	}
+		//convertir pdf a jpg
+		// $im = imagecreatefromjpeg('galería/Nota de Duelo '.ucwords(strtolower($row['nombres'].' '.$row['apellidos'])).'.jpg');
+		// $mpdf->Output("galería/Nota de Duelo ".ucwords(strtolower($row['nombres'].' '.$row['apellidos'])).".jpg", "F");
+
+		// }
+	// }
 }
+// }

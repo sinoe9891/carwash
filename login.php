@@ -4,6 +4,15 @@ include 'inc/templates/header.php';
 // 	$_SESSION = array();
 // }
 ?>
+<style>
+	.hero-header img {
+    animation: none;
+}
+.py-5 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+</style>
 <body>
 	<div class="container-xxl bg-white p-0">
 		<!-- Spinner Start -->
@@ -16,10 +25,11 @@ include 'inc/templates/header.php';
 		<!-- Navbar & Hero Start -->
 		<div class="container-xxl position-relative p-0">
 			<?php
-			include 'inc/templates/navbar.php';
+			// include 'inc/templates/navbar.php';
 			?>
 			<div class="container-xxl py-5 bg-dark hero-header mb-5">
 				<div class="container text-center my-5 pt-5 pb-4">
+					<img src="img/logo.png" alt="">
 				</div>
 			</div>
 		</div>

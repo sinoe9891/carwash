@@ -1,5 +1,19 @@
 <?php
 include 'inc/templates/header.php';
+session_start();
+$name = $_SESSION['nombre_usuario'];
+// $ordenid = $_GET['orden'];
+$today = getdate();
+$hora = $today["hours"];
+if ($hora < 6) {
+	$saludo = " Hoy has madrugado mucho... ";
+} elseif ($hora < 12) {
+	$saludo = " Buenos días ";
+} elseif ($hora <= 18) {
+	$saludo = "Buenas Tardes ";
+} else {
+	$saludo = "Buenas Noches ";
+}
 ?>
 
 <body>

@@ -38,7 +38,7 @@ if ($hora < 6) {
 		<!-- Navbar & Hero Start -->
 		<div class="container-xxl position-relative p-0">
 			<?php
-			include 'inc/templates/navbar-mesero.php';
+				include 'inc/templates/navbar-admin.php';
 			?>
 
 			<div class="container-xxl py-5 bg-dark hero-header mb-5">
@@ -74,8 +74,8 @@ if ($hora < 6) {
 									<tr>
 										<th>No. Orden</th>
 										<th>Fecha</th>
-										<th>Mesa</th>
-										<th>Mesero</th>
+										<th>Asinación No.</th>
+										<th>Responsable</th>
 										<th>Estado</th>
 										<th>Acciones</th>
 									</tr>
@@ -84,7 +84,7 @@ if ($hora < 6) {
 									<?php
 									$date = date('Y-m-d', time());  
 									// while ($solicitud = $consulta->fetch_array()) {
-									$consulta = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.date = '$date' and  b.id = '$iduser' and a.estado = 'cola' ORDER BY a.datetime ASC");
+									$consulta = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.date = '$date' and b.id = '$iduser' ORDER BY a.datetime DESC");
 									$contador = 1;
 									$total = 0;
 									while ($solicitud = $consulta->fetch_array()) {
@@ -99,8 +99,13 @@ if ($hora < 6) {
 										if ($estado == 'cola') {
 											$estadoUser = 'En Proceso';
 											$color = 'bg-success';
-										} elseif ($estado == 'cancelado') {
-											$estadoUser = 'Deshabilitado';
+										} elseif ($estado == 'cancelada') {
+											$estadoUser = 'Cancelada';
+											$color = 'bg-secondary';
+										}
+										
+										if ($estado == 'pagada') {
+											$estadoUser = 'Pagada';
 											$color = 'bg-secondary';
 										}
 									?>
@@ -112,7 +117,7 @@ if ($hora < 6) {
 											<td><?php echo '<span class="badge ' . $color . '">' . $estadoUser . '</span>' ?></td>
 											<td>
 												<!-- <a href="edit-usuario?ID=<?php echo $solicitud['id_orden'] ?>" target="_self"><span class="badge bg-primary"><i class="fas fa-edit"></i>Editar</span></a> -->
-
+												<a href="detalle-cajero?ID=<?php echo $solicitud['id_orden'] ?>" target="_self"><span class="badge bg-primary"><i class="fas fa-eye"></i>Ver Detalle</span></a>
 												<span class="badge bg-danger" id="<?php echo $solicitud['id'] ?>" onclick="eliminar('<?php echo $solicitud['id_orden'] ?>')">
 													<i class="fas fa-trash"></i>Cancelar
 												</span>

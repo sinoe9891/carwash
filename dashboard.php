@@ -3,13 +3,13 @@ date_default_timezone_set('America/Tegucigalpa');
 include 'inc/templates/header.php';
 // include 'inc/sesiones.php';
 session_start();
-if (!isset($_SESSION['nombre_usuario'])) {
-	header('Location: login.php');
-	// echo $_SESSION['session'];
-	exit;
-}else{
-	$name = $_SESSION['nombre_usuario'];
-}
+// if (!isset($_SESSION['nombre_usuario'])) {
+// 	header('Location: login.php');
+// 	// echo $_SESSION['session'];
+// 	exit;
+// } else {
+// 	$name = $_SESSION['nombre_usuario'];
+// }
 
 
 $today = getdate();
@@ -28,11 +28,11 @@ if ($hora < 6) {
 <body>
 	<div class="container-xxl bg-white p-0">
 		<!-- Spinner Start -->
-		<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+		<!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
 			<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
 				<span class="sr-only">Loading...</span>
 			</div>
-		</div>
+		</div> -->
 		<!-- Spinner End -->
 
 
@@ -103,7 +103,7 @@ if ($hora < 6) {
 							</a>
 						</div>
 					</div>
-					<div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+					<!-- <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
 						<div class="service-item rounded pt-3">
 							<a href="ordenes_admin">
 								<div class="p-4">
@@ -113,7 +113,7 @@ if ($hora < 6) {
 							</a>
 						</div>
 					</div>
-					<!-- <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+					<div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
 						<div class="service-item rounded pt-3">
 							<div class="p-4">
 								<i class="fa fa-3x fa-headset text-primary mb-4"></i>
@@ -127,16 +127,6 @@ if ($hora < 6) {
 							<div class="p-4">
 								<i class="fa fa-3x fa-headset text-primary mb-4"></i>
 								<h5>Comentarios</h5>
-								<p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-						<div class="service-item rounded pt-3">
-							<div class="p-4">
-								<i class="fa fa-3x fa-headset text-primary mb-4"></i>
-								<h5>Recetas</h5>
 								<p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
 							</div>
 						</div>
@@ -164,6 +154,6 @@ if ($hora < 6) {
 		</div>
 		<!-- Service End -->
 		<?php
-		include 'inc/templates/comentarios.php';
+		// include 'inc/templates/comentarios.php';
 		include 'inc/templates/footer.php';
 		?>

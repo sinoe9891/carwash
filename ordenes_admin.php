@@ -21,6 +21,7 @@ if ($hora < 6) {
 } else {
 	$saludo = "Buenas Noches ";
 }
+
 ?>
 
 <body>
@@ -59,7 +60,8 @@ if ($hora < 6) {
 				<section class="section clientes">
 					<div class="card">
 						<div class="card-body">
-							<H1>Ordenes <?php
+							<h3>Todas las Ordenes</h3>
+										<h4> Hoy es: <?php
 										// date_default_timezone_set('America/Tegucigalpa');
 										$oldLocale = setlocale(LC_TIME, 'es_HN');
 										setlocale(LC_TIME, $oldLocale);
@@ -67,7 +69,7 @@ if ($hora < 6) {
 										echo $date1;
 										// setlocale(LC_ALL,"es_ES");
 										// echo strftime("%A %d de %B del %Y");
-										?></H1>
+										?></h4>
 							<table class="table table-striped" id="table1">
 								<thead>
 									<tr>
@@ -112,7 +114,7 @@ if ($hora < 6) {
 											
 										}elseif ($estado == 'pagada') {
 											$estadoUser = 'Pagada';
-											$color = 'bg-success';
+											$color = 'bg-info';
 											$ver = 'display:none';
 											
 										}
@@ -199,3 +201,10 @@ if ($hora < 6) {
 				})
 			}
 		</script>
+		<script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+		<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script>
+	// Simple Datatable
+	let table1 = document.querySelector('#table1');
+	let dataTable = new simpleDatatables.DataTable(table1);
+</script>

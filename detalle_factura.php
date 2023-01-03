@@ -1,5 +1,7 @@
 <?php
 date_default_timezone_set('America/Tegucigalpa');
+
+
 include 'inc/templates/header.php';
 include 'inc/conexion.php';
 // include 'inc/sesiones.php';
@@ -31,13 +33,13 @@ $ultimaorden = 0;
 
 $sql = "SELECT * FROM `ordenes` order by id_orden DESC LIMIT 1";
 
-if ($result=mysqli_query($conn,$sql)) {
-    $rowcount=mysqli_num_rows($result);
+if ($result = mysqli_query($conn, $sql)) {
+	$rowcount = mysqli_num_rows($result);
 	if ($rowcount > 0) {
 		while ($solicitud = $consulta->fetch_array()) {
 			$ultimaorden = $solicitud['no_factura'];
 		}
-	}else{
+	} else {
 		$ultimaorden = 0;
 	}
 }
@@ -58,7 +60,9 @@ if ($result=mysqli_query($conn,$sql)) {
 		<!-- Navbar & Hero Start -->
 		<div class="container-xxl position-relative p-0">
 			<?php
+
 			include 'inc/templates/navbar-admin.php';
+
 			?>
 
 			<div class="container-xxl py-5 bg-dark hero-header mb-5">
@@ -82,42 +86,48 @@ if ($result=mysqli_query($conn,$sql)) {
 						<div class="card-body">
 							<form action="inc/models/insert.php" name="formulario" method="post">
 								<?php
-									$orden = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.id_orden = $ID and b.id = a.id_mesero");
-									$contador = 1;
-									$total = 0;
-									while ($solicitud = $orden->fetch_array()) {
-										$datetime = $solicitud['datetime'];
-										$id_mesa = $solicitud['id_mesa'];
-										$id_mesero = $solicitud['id_mesero'];
-										$username = $solicitud['usuario_name'];
-										$apellidos = $solicitud['apellidos'];
-										$estado = $solicitud['estado'];
-										if ($estado == 'cola') {
-											$estadoFactura = 'En Proceso';
-											$color = 'bg-success';
-										} elseif ($estado == 'cancelada') {
-											$estadoFactura = 'Cancelada';
-											$color = 'bg-secondary';
-											$ver = 'display:none';
-										} elseif ($estado == 'concluida') {
-											$estadoFactura = 'Pendiente';
-											$color = 'bg-success';
-											$ver = '';
-										} elseif ($estado == 'pagada') {
-											$estadoFactura = 'Pagada';
-											$color = 'bg-success';
-											$ver = 'display:none';
-										}elseif ($estado == ''){
-											$estadoFactura = '';
-											$color = 'bg-success';
-											$ver = '';
-										}
-									};
+								$orden = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.id_orden = $ID and b.id = a.id_mesero");
+								$contador = 1;
+								$total = 0;
+								while ($solicitud = $orden->fetch_array()) {
+									$datetime = $solicitud['datetime'];
+									$id_mesa = $solicitud['id_mesa'];
+									$id_mesero = $solicitud['id_mesero'];
+									$username = $solicitud['usuario_name'];
+									$apellidos = $solicitud['apellidos'];
+									$estado = $solicitud['estado'];
+									if ($estado == 'cola') {
+										$estadoFactura = 'En Proceso';
+										$color = 'bg-success';
+										$ultimaorden = $ultimaorden + 1;
+										$verfactura = 'display:none';
+									} elseif ($estado == 'cancelada') {
+										$estadoFactura = 'Cancelada';
+										$color = 'bg-secondary';
+										$ver = 'display:none';
+										$verfactura = 'display:none';
+									} elseif ($estado == 'concluida') {
+										$estadoFactura = 'Pendiente';
+										$color = 'bg-success';
+										$ver = '';
+									} elseif ($estado == 'pagada') {
+										$estadoFactura = 'Pagada';
+										$ultimaorden = $ultimaorden;
+										$color = 'bg-success';
+										$ver = 'display:none';
+										$verfactura = '';
+									} elseif ($estado == '') {
+										$estadoFactura = '';
+										$color = 'bg-success';
+										$ver = '';
+									}
+								};
+								
 								?>
-								<h3>Factura No. #<?php echo $ultimaorden + 1 ?> <?php echo '| <span style="color:green;">'.$estadoFactura.'</span>' ?></h3>
+								<h3>Factura No. #<?php echo $ultimaorden?> <?php echo '| <span style="color:green;">' . $estadoFactura . '</span>' ?></h3>
 								<h5>Fecha: <?php echo $datetime ?></h5>
-								<h5>Mesero: <?php echo $username . ' ' . $apellidos ?></h5>
-								<h5>Mesa: <?php echo $id_mesa ?></h5>
+								<h5>Responsable: <?php echo $username . ' ' . $apellidos ?></h5>
+								<h5>Ubicación: <?php echo $id_mesa ?></h5>
 								<table class="table table-striped" id="table1">
 									<thead>
 										<tr>
@@ -143,7 +153,7 @@ if ($result=mysqli_query($conn,$sql)) {
 											$precio_oferta = $solicitud['precio_oferta'];
 											if ($oferta == 1) {
 												$precio = $precioplato;
-												$check = 'L. '.$precioplato.' ✅ ';
+												$check = 'L. ' . $precioplato . ' ✅ ';
 											} else {
 												$precio = $precioplato;
 												$check = 'L. 00.00';
@@ -211,6 +221,7 @@ if ($result=mysqli_query($conn,$sql)) {
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="grantotal" value="<?php echo $grantotal ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="impuestototal" value="<?php echo $impuestototal ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="accion" value="facturacrear">
+									<div class="btn btn-info me-1 mb-1" style='<?php echo $verfactura ?>' onclick="verFactura()" value="verfactura">Ver Factura</div>
 									<div class="btn btn-primary me-1 mb-1" style='<?php echo $ver ?>' onclick="enviarFactura()" value="Cocinar">Pagar</div>
 									<a href="ordenes_admin">
 										<div class="btn btn-secondary me-1 mb-1">Regresar</div>
@@ -253,10 +264,36 @@ if ($result=mysqli_query($conn,$sql)) {
 				</script>";
 			}
 		}
+
+		if (isset($_GET['add']) && isset($_GET['ID'])) {
+			if ($_GET['add'] == 1 && $_GET['ID'] == 1 && $estadoFactura == 'Pagada') {
+				echo "<script>
+				console.log('Hola');
+				Swal.fire({
+					icon: 'success',
+					title: 'Pago realizado con éxtio!',
+					text: 'El pago fue realizado correctamente',
+					position: 'center',
+					showConfirmButton: true
+				}).then(function () {
+					// window.location = 'usuarios.php';
+				});
+			</script>";
+			} else {
+				echo "<script>
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'El pago no se pudo realizar, hubo algún error!'
+				}).then(function () {
+					// window.location = 'usuarios.php';
+				});
+				</script>";
+			}
+		}
 		?>
 		<script>
 			function enviarFactura() {
-				console.log("eliminar");
 				Swal.fire({
 					title: 'Seguro(a)?',
 					text: "Todo lo que el cliente solicitó esta en la factura?",
@@ -264,7 +301,7 @@ if ($result=mysqli_query($conn,$sql)) {
 					showCancelButton: true,
 					confirmButtonColor: '#3085d6',
 					cancelButtonColor: '#d33',
-					confirmButtonText: 'Sí, ordenar!',
+					confirmButtonText: 'Sí, pagar!',
 					cancelButtonText: 'Cancelar'
 				}).then((result) => {
 					if (result.isConfirmed) {
@@ -274,5 +311,25 @@ if ($result=mysqli_query($conn,$sql)) {
 						Swal.fire('No sé ordenó', '', 'info')
 					}
 				})
+			}
+
+			function verFactura() {
+				// document.formulario.submit()
+				window.open('doc/factura.php?ID=<?php echo $ID; ?>&add=1', '_blank');
+				// Swal.fire({
+				// 	title: 'Seguro(a)?',
+				// 	text: "Ver factura",
+				// 	icon: 'warning',
+				// 	showCancelButton: true,
+				// 	confirmButtonColor: '#3085d6',
+				// 	cancelButtonColor: '#d33',
+				// 	confirmButtonText: 'Sí, Ver Factura',
+				// 	cancelButtonText: 'Cancelar'
+				// }).then((result) => {
+				// 	if (result.isConfirmed) {
+				// 	} else if (result.isDenied) {
+				// 		Swal.fire('No sé ordenó', '', 'info')
+				// 	}
+				// })
 			}
 		</script>

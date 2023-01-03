@@ -62,7 +62,7 @@ if ($hora < 6) {
 			<div class="container">
 				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
 					<h5 class="section-title ff-secondary text-center text-primary fw-normal">Administrar</h5>
-					<h1 class="mb-5">Mesas</h1>
+					<h1 class="mb-5">Colaboradores</h1>
 				</div>
 				<section class="section clientes">
 					<div class="card">
@@ -72,7 +72,7 @@ if ($hora < 6) {
 								$consulta = $conn->query("SELECT * FROM mesas WHERE id_mesero = $iduser ORDER BY numero_mesa ASC");
 								$contador = 1;
 								while ($solicitud = $consulta->fetch_array()) {
-									$idmesa = $solicitud['id'];
+									$idmesa = $solicitud['id_asignacion'];
 									$numero_mesa = $solicitud['numero_mesa'];
 									$estado = $solicitud['estado_mesa'];
 									$asignada = $solicitud['asignada'];
@@ -88,7 +88,7 @@ if ($hora < 6) {
 										<div style="text-align:center;">
 											<a href="menu_mesero?idm=<?php echo $idmesa; ?>">
 												<img class="mesa" width='200px' src="img/mesa.svg" alt="">
-												<p>Mesa <?php echo $numero_mesa; ?></p>
+												<p>Espacio <?php echo $numero_mesa; ?></p>
 											</a>
 										</div>
 									</div>

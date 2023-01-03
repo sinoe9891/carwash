@@ -31,11 +31,11 @@ if ($hora < 6) {
 <body>
 	<div class="container-xxl bg-white p-0">
 		<!-- Spinner Start -->
-		<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+		<!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
 			<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
 				<span class="sr-only">Loading...</span>
 			</div>
-		</div>
+		</div> -->
 		<!-- Spinner End -->
 
 
@@ -64,41 +64,40 @@ if ($hora < 6) {
 		<div class="container-xxl py-5">
 			<div class="container">
 				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-					<h5 class="section-title ff-secondary text-center text-primary fw-normal">Menú</h5>
-					<h1 class="mb-5">Disfruta de lo mejor</h1>
+					<h5 class="section-title ff-secondary text-center text-primary fw-normal">Productos</h5>
+					<h1 class="mb-5">Selecciona los productos</h1>
 				</div>
 				<div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
 					<ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
-						<li class="nav-item">
-							<a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active" data-bs-toggle="pill" href="#tab-1">
-								<!-- <i class="fa fa-coffee fa-2x text-primary"></i> -->
-								<img src="img/iconos-03.png" alt="">
-								<div class="ps-3">
-									<small class="text-body">Popular</small>
-									<h6 class="mt-n1 mb-0">Herramientas</h6>
-								</div>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="d-flex align-items-center text-start mx-3 pb-3" data-bs-toggle="pill" href="#tab-2">
-								<!-- <i class="fa fa-hamburger fa-2x text-primary"></i> -->
-								<img src="img/iconos-05.png" alt="">
-								<div class="ps-3">
-									<small class="text-body">Special</small>
-									<h6 class="mt-n1 mb-0">Construcción</h6>
-								</div>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="d-flex align-items-center text-start mx-3 me-0 pb-3" data-bs-toggle="pill" href="#tab-3">
-								<!-- <i class="fa fa-utensils fa-2x text-primary"></i> -->
-								<img src="img/iconos-04.png" alt="">
-								<div class="ps-3">
-									<small class="text-body">Lovely</small>
-									<h6 class="mt-n1 mb-0">Equipamiento</h6>
-								</div>
-							</a>
-						</li>
+						<?php
+						$consultacategoria = $conn->query("SELECT * FROM `categorias_menu` WHERE estado = 'a'");
+						$contador = 0;
+						while ($solicitud = $consultacategoria->fetch_array()) {
+							$id_categoria = $solicitud['id_categoria'];
+							$nombre_categoria = $solicitud['nombre_categoria'];
+							$icono = $solicitud['icono'];
+							$contador++;
+							$active = 'active';
+							if ($contador == 1) {
+								$active = 'active';
+							} else {
+								$active = '';
+							}
+						?>
+							<li class="nav-item">
+								<a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 <?php echo $active ?>" data-bs-toggle="pill" href="#tab-<?php echo $id_categoria ?>">
+									<!-- <i class="fa fa-coffee fa-2x text-primary"></i> -->
+									<img src="<?php echo $icono ?>" alt="">
+									<div class="ps-3">
+										<!-- <small class="text-body">Popular</small> -->
+										<h6 class="mt-n1 mb-0"><?php echo $nombre_categoria ?></h6>
+									</div>
+								</a>
+							</li>
+
+						<?php
+						};
+						?>
 					</ul>
 					<form action="ordenar.php" method="post" enctype="multipart/form-data">
 						<div class="tab-content">
@@ -128,14 +127,21 @@ if ($hora < 6) {
 											<div class="d-flex align-items-center">
 												<img class="flex-shrink-0 img-fluid rounded" src="<?php echo $url_foto ?>" alt="" style="width: 80px;">
 												<div class="w-100 d-flex flex-column text-start ps-4">
-													<h5 class="d-flex justify-content-between border-bottom pb-2">
-														<span><?php echo $nombre ?></span>
-														<span class="text-primary">L.<?php echo $precio ?></span>
-													</h5>
-													<small class="fst-italic"><?php echo $descripcion ?></small>
-												</div>
+												<h5 class="d-flex justify-content-between border-bottom pb-2">
+													<span><?php echo $nombre ?></span>
+													<?php
+													if ($oferta == 1) {
+														echo '<div style="text-align: right;"><div><span class="text-primary" style="font-size: 13px;text-decoration: line-through !important;">Antes L.' . $precio . '</span></div><div><span class="text-primary" style="color:#dc3545 !important;">Oferta L. ' . $precio_oferta . '</span></div></div>';
+													} else {
+														echo '<span class="text-primary">L.' . $precio . '</span>';
+													};
+													?>
+												</h5>
+												<small class="fst-italic"><?php echo $descripcion ?></small>
+											</div>
 												<div>
 													<input type="checkbox" name="menu[]" id="" value="<?php echo $idplato ?>">
+													<!-- <input type="number" name="number[]" id="" value="1"> -->
 												</div>
 											</div>
 										</div>
@@ -170,14 +176,21 @@ if ($hora < 6) {
 											<div class="d-flex align-items-center">
 												<img class="flex-shrink-0 img-fluid rounded" src="<?php echo $url_foto ?>" alt="" style="width: 80px;">
 												<div class="w-100 d-flex flex-column text-start ps-4">
-													<h5 class="d-flex justify-content-between border-bottom pb-2">
-														<span><?php echo $nombre ?></span>
-														<span class="text-primary">L.<?php echo $precio ?></span>
-													</h5>
-													<small class="fst-italic"><?php echo $descripcion ?></small>
-												</div>
+												<h5 class="d-flex justify-content-between border-bottom pb-2">
+													<span><?php echo $nombre ?></span>
+													<?php
+													if ($oferta == 1) {
+														echo '<div style="text-align: right;"><div><span class="text-primary" style="font-size: 13px;text-decoration: line-through !important;">Antes L.' . $precio . '</span></div><div><span class="text-primary" style="color:#dc3545 !important;">Oferta L. ' . $precio_oferta . '</span></div></div>';
+													} else {
+														echo '<span class="text-primary">L.' . $precio . '</span>';
+													};
+													?>
+												</h5>
+												<small class="fst-italic"><?php echo $descripcion ?></small>
+											</div>
 												<div>
 													<input type="checkbox" name="menu[]" id="" value="<?php echo $idplato ?>">
+													<!-- <input type="number" name="number[]" id="" value="1"> -->
 												</div>
 											</div>
 										</div>

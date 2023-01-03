@@ -1,6 +1,9 @@
 <?php
 $archivo = basename($_SERVER['PHP_SELF']);
 $actualidad = str_replace(".php", "", $archivo);
+$idsesion = $_SESSION['role_user'];
+
+
 ?>
 
 </style>
@@ -17,7 +20,7 @@ $actualidad = str_replace(".php", "", $archivo);
 	<div class="collapse navbar-collapse" id="navbarCollapse">
 		<div class="navbar-nav ms-auto py-0 pe-4">
 			 <!-- <a href="." class="nav-item nav-link <?php echo $actualidad == 'index' ? 'active' : 'false' ?>">Inicio</a> -->
-			<a href="mesas_mesero" class="nav-item nav-link <?php echo $actualidad == 'mesas_mesero' ? 'active' : '' ?>">Mesas</a>
+			<a href="mesas_mesero" class="nav-item nav-link <?php echo $actualidad == 'mesas_mesero' ? 'active' : '' ?>">Espacios</a>
 			<!--<a href="recetas-admin" class="nav-item nav-link <?php echo $actualidad == 'recetas-admin' ? 'active' : '' ?>">Recetas</a>
 			<a href="menu-admin" class="nav-item nav-link <?php echo $actualidad == 'menu-admin' ? 'active' : '' ?>">Menú</a>
 			<div class="nav-item dropdown">
@@ -31,6 +34,6 @@ $actualidad = str_replace(".php", "", $archivo);
 			<!-- <a href="contact" class="nav-item nav-link">Soporte</a> -->
 			<a href="ordenes" class="nav-item nav-link">Ordenes</a>
 		</div>
-		<a href="logout" class="btn btn-primary py-2 px-4">Cerrar Sesión</a>
+		<a href="logout" class="btn btn-primary py-2 px-4">Cerrar Sesión <?php echo $idsesion; ?></a>
 	</div>
 </nav>
