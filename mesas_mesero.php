@@ -43,7 +43,6 @@ if ($hora < 6) {
 			<?php
 			include 'inc/templates/navbar-admin.php';
 			?>
-
 			<div class="container-xxl py-5 bg-dark hero-header mb-5">
 				<div class="container my-5 py-5">
 					<div class="row ">
@@ -55,8 +54,6 @@ if ($hora < 6) {
 			</div>
 		</div>
 		<!-- Navbar & Hero End -->
-
-
 		<!-- Service Start -->
 		<div class="container-xxl py-5">
 			<div class="container">
@@ -88,7 +85,7 @@ if ($hora < 6) {
 									?>
 										<div class="col-sm-4 wow fadeInUp">
 											<div style="text-align:center;">
-												<a href="menu_mesero?idm=<?php echo $idmesa; ?>">
+												<a href="menu_cliente?idm=<?php echo $idmesa; ?>">
 												<i class="fa fa-3x fas fa-car-garage text-primary mb-4"></i>
 													<p>Espacio <?php echo $numero_mesa; ?></p>
 												</a>
