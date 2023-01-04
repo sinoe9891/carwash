@@ -275,6 +275,13 @@ if ($accion === 'newOrden') {
 	$subtotal = $_POST['subtotal'];
 	$supertotal =  $subtotal;
 
+	$seleccion = $_POST['seleccion'];
+	$idvehiculo = $_POST['idvehiculocliente'];
+	$nombrecliente = $_POST['nombrecliente'];
+	$anovehiculo = $_POST['anovehiculo'];
+	$color = $_POST['color'];
+
+
 	$checkBox = implode(',', $_POST['menuplato']);
 	$DateAndTime = date('Y-m-d h:i:s', time());
 	$date = date('Y-m-d', time());
@@ -315,7 +322,7 @@ if ($accion === 'newOrden') {
 			// echo $totalSub . '<br><br>';
 			// echo $total . '<br><br>';
 
-			$sql = "INSERT INTO orden_detalle (`id_orden_detalle`, `id_mesero`, `descripcion`, `id_plato`, `precio_plato`,  `descuento`, `subtotal`, `cantidad`) VALUES ('$ultimoid', '$mesero', '$nombre', '$val', '$preciocondescueto',  '$subtotal', $precio_oferta, $cantidad[$i])";
+			$sql = "INSERT INTO orden_detalle (`id_orden_detalle`, `id_mesero`, `descripcion`, `id_plato`, `precio_plato`,  `descuento`, `subtotal`, `cantidad`, `id_cliente`, `id_vehiculocliente`) VALUES ('$ultimoid', '$mesero', '$nombre', '$val', '$preciocondescueto',  '$subtotal', $precio_oferta, $cantidad[$i], $seleccion, $idvehiculo)";
 			if (mysqli_query($conn, $sql)) {
 				$insertado = true;
 			}else{

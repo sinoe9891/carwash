@@ -6,13 +6,36 @@ include 'inc/conexion.php';
 session_start();
 $name = $_SESSION['nombre_usuario'];
 $id_user = $_SESSION['id'];
-
 $idmesa = $_POST['idm'];
-$idcliente = $_POST['idcliente'];
-$vehiculo = $_POST['vehiculo'];
-$nombrecliente = $_POST['nombrecliente'];
+$seleccion = $_POST['seleccion'];
 
-// var_dump($_POST);
+$idcliente = $_POST['idcliente'];
+// $vehiculo = $_POST['vehiculo'];
+
+foreach ($_POST as $nombre_campo => $valor) {
+	if (gettype($valor) == 'array') {
+		for ($i = 0; $i < count($valor); $i++) {
+			// $idvehiculo = $valor[$i];
+			if ($valor[$i] != 0) {
+				$idvehiculo = $valor[$i];
+			}else{
+				$alerta = 'No se seleccionó ningún vehículo';
+			}
+			// $consultavehiculo = $conn->query0("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c, clientes d where a.id_client = d.id_cliente and a.id_vehiculocliente = $valor[$i] and a.id_client = $seleccion and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;");
+			// while ($solicitud = $consultavehiculo->fetch_array()) {
+			// 	$id_vehiculocliente = $solicitud['id_vehiculocliente'];
+			// 	$marca = $solicitud['marca'];
+			// 	$ano = $solicitud['ano_cliente'];
+			// 	$color = $solicitud['color'];
+			// 	echo '<h5>Vehículo:' . $marca . '</h5>';
+			// 	echo '<h5>Año:' . $ano . '</h5>';
+			// 	echo '<h5>Color:' . $color . '</h5>';
+			// 	echo '<br>';
+			// }
+			// echo 'ENTRÓ';
+		}
+	} 
+}
 
 $today = getdate();
 $hora = $today["hours"];
@@ -69,31 +92,41 @@ if ($hora < 6) {
 		<!-- Menu Start -->
 		<div class="container-xxl py-5">
 			<div class="container">
-				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-					<h5 class="section-title ff-secondary text-center text-primary fw-normal">Orden</h5>
-					<div class="cliente" style="text-align: left;">
-
-						<h5>ID:<? echo $idcliente; ?></h5>
-						<h5>Cliente:<? echo $nombrecliente; ?></h5>
-						<?php
-
-						$consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c where a.id_vehiculocliente = $vehiculo and a.id_client = $idcliente and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;");
-						while ($solicitud = $consultavehiculo->fetch_array()) {
-							$id_vehiculocliente = $solicitud['id_vehiculocliente'];
-							$marca = $solicitud['marca'];
-							$ano = $solicitud['ano_cliente'];
-							$color = $solicitud['color'];
-							echo '<h5>Vehículo:' . $marca . '</h5>';
-							echo '<h5>Año:' . $ano . '</h5>';
-							echo '<h5>Color:' . $color . '</h5>';
-						}
-						?>
-
-					</div>
-					<h1 class="mb-5">Selecciona los productos</h1>
-				</div>
 				<div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
 					<form action="ordenar" method="post" enctype="multipart/form-data">
+						<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+							<h5 class="section-title ff-secondary text-center text-primary fw-normal">Orden</h5>
+							<div class="cliente" style="text-align: left;">
+		
+								<?php
+								$consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c, clientes d where a.id_client = d.id_cliente and a.id_vehiculocliente = $idvehiculo and a.id_client = $seleccion and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;");
+								// var_dump($consultavehiculo);
+								while ($solicitud = $consultavehiculo->fetch_array()) {
+									$id_vehiculocliente = $solicitud['id_vehiculocliente'];
+									$nombre_cliente = $solicitud['nombre_cliente'];
+									$apellido_cliente = $solicitud['apellido_cliente'];
+									$id_cliente = $solicitud['id_cliente'];
+									$marca = $solicitud['marca'];
+									$ano = $solicitud['ano_cliente'];
+									$color = $solicitud['color'];
+									echo '<h5>ID:' . $id_cliente . '</h5>';
+									echo '<h5>Cliente:' . $nombre_cliente . ' '. $apellido_cliente . '</h5>';
+									echo '<h5>Vehículo:' . $marca . '</h5>';
+									echo '<h5>Año:' . $ano . '</h5>';
+									echo '<h5>Color:' . $color . '</h5>';
+									?>
+									<input type="hidden" name="seleccion" value="<?php echo $seleccion ?>">
+									<input type="hidden" name="idvehiculocliente" value="<?php echo $id_vehiculocliente ?>">
+									<input type="hidden" name="nombrecliente" value="<?php echo $nombre_cliente ?>">
+									<input type="hidden" name="anovehiculo" value="<?php echo $ano ?>">
+									<input type="hidden" name="color" value="<?php echo $color ?>">
+									<?php
+								}
+								?>
+		
+							</div>
+							<h3 class="mb-5">Selecciona los productos</h3>
+						</div>
 						<ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
 							<?php
 							$consultacategoria = $conn->query("SELECT * FROM `categorias_menu` WHERE estado = 'a'");
@@ -272,7 +305,7 @@ if ($hora < 6) {
 							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="mesero" value="<?php echo $id_user ?>">
 							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="accion" value="newOrden">
 							<input class="btn btn-primary me-1 mb-1" type="submit" value="Ordenar" name="crearorden">
-							<a href="mesas_mesero">
+							<a href="menu_cliente?idm=<?php echo $idmesa?>">
 								<div class="btn btn-secondary me-1 mb-1">Regresar</div>
 							</a>
 						</div>

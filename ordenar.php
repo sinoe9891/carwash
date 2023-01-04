@@ -8,6 +8,8 @@ $name = $_SESSION['nombre_usuario'];
 $accion = $_POST['accion'];
 $id_user = $_SESSION['id'];
 $idmesa = $_POST['mesa'];
+$seleccion = $_POST['seleccion'];
+$idvehiculo = $_POST['idvehiculocliente'];
 $today = getdate();
 $hora = $today["hours"];
 if ($hora < 6) {
@@ -19,6 +21,7 @@ if ($hora < 6) {
 } else {
 	$saludo = "Buenas Noches ";
 }
+
 $consulta = $conn->query("SELECT * FROM `ordenes` order by id_orden DESC LIMIT 1");
 // $contador = 1;
 $ultimaorden = 0;
@@ -83,7 +86,36 @@ if ($result = mysqli_query($conn, $sql)) {
 					<div class="card">
 						<div class="card-body">
 							<form action="inc/models/insert.php" name="formulario" method="post">
-								<H1>Orden #<?php echo $ultimaorden + 1 ?></H1>
+								<h2>Orden #<?php echo $ultimaorden + 1 ?></h2>
+								<div class="cliente" style="text-align: left;">
+
+								<?php
+								$consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c, clientes d where a.id_client = d.id_cliente and a.id_vehiculocliente = $idvehiculo and a.id_client = $seleccion and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;");
+								// var_dump($consultavehiculo);
+								while ($solicitud = $consultavehiculo->fetch_array()) {
+									$id_vehiculocliente = $solicitud['id_vehiculocliente'];
+									$nombre_cliente = $solicitud['nombre_cliente'];
+									$apellido_cliente = $solicitud['apellido_cliente'];
+									$id_cliente = $solicitud['id_cliente'];
+									$marca = $solicitud['marca'];
+									$ano = $solicitud['ano_cliente'];
+									$color = $solicitud['color'];
+									echo '<h5>ID: ' . $id_cliente . '</h5>';
+									echo '<h5>Cliente: ' .$nombre_cliente . ' '. $apellido_cliente . '</h5>';
+									echo '<h5>Vehículo: ' . $marca . '</h5>';
+									echo '<h5>Año: ' . $ano . '</h5>';
+									echo '<h5>Color: ' . $color . '</h5>';
+									?>
+									<input type="hidden" name="seleccion" value="<?php echo $seleccion ?>">
+									<input type="hidden" name="idvehiculocliente" value="<?php echo $id_vehiculocliente ?>">
+									<input type="hidden" name="nombrecliente" value="<?php echo $nombre_cliente . ' '. $apellido_cliente ?>">
+									<input type="hidden" name="anovehiculo" value="<?php echo $ano ?>">
+									<input type="hidden" name="color" value="<?php echo $color ?>">
+									<?php
+								}
+								?>
+		
+							</div>
 								<table class="table table-striped" id="table1" >
 									<thead>
 										<tr>
@@ -133,7 +165,7 @@ if ($result = mysqli_query($conn, $sql)) {
 													<tr id="solicitud:<?php echo $solicitud['id'] ?>" class="elemento<?php echo $elemento++ ?>" onclick="acceso(this);">
 														<td><?php echo $contador++; ?></td>
 														<td><?php echo $nombre ?></td>
-														<td><input type="number" class='cantidad<?php echo $elemento ?>' name="cantidad[]" value="1" placeholder="" onclick="click(this)"></td>
+														<td><input readonly type="number" class='cantidad<?php echo $elemento ?>' name="cantidad[]" value="1" placeholder="" onclick="click(this)"></td>
 														<td>L.
 															<input type="text" name="precio" id="precio<?php echo $elemento ?>" value="<?php echo $precio ?>" readonly>
 														</td>
@@ -174,9 +206,9 @@ if ($result = mysqli_query($conn, $sql)) {
 									<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="accion" value="newOrden">
 									<!-- <input type="submit" class="btn btn-primary me-1 mb-1" name="name" value="Cocinar" onclick="enviarorden()"> -->
 									<div class="btn btn-primary me-1 mb-1" onclick="enviarorden()" value="Cocinar">Ordenar</div>
-									<a href="menu_mesero?idm=<?php echo $idmesa; ?>">
-										<div class="btn btn-secondary me-1 mb-1">Regresar</div>
-									</a>
+									<!-- <a href="menu_mesero?idm=<?php echo $idmesa?>" > -->
+										<div onclick="regresar()"class="btn btn-secondary me-1 mb-1">Regresar</div>
+									<!-- </a> -->
 
 
 								</div>
@@ -268,6 +300,27 @@ if ($result = mysqli_query($conn, $sql)) {
 					if (result.isConfirmed) {
 						document.formulario.submit()
 						// window.location = 'inc/models/insert.php';
+					} else if (result.isDenied) {
+						Swal.fire('No sé ordenó', '', 'info')
+					}
+				})
+			}
+
+			function regresar() {
+				console.log("eliminar");
+				Swal.fire({
+					title: 'Seguro(a)?',
+					text: "Desea regresar y eliminar los cambios?",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Sí, estoy Seguro!',
+					cancelButtonText: 'Cancelar'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						document.formulario.submit()
+						window.location = 'menu_cliente?idm=<?php echo $idmesa; ?>';
 					} else if (result.isDenied) {
 						Swal.fire('No sé ordenó', '', 'info')
 					}

@@ -99,14 +99,17 @@ if ($hora < 6) {
 										if ($estado == 'cola') {
 											$estadoUser = 'En Proceso';
 											$color = 'bg-success';
+											$vercancelar = 'display:none;';
 										} elseif ($estado == 'cancelada') {
 											$estadoUser = 'Cancelada';
-											$color = 'bg-secondary';
+											$color = 'bg-danger';
+											$vercancelar = 'display:none;';
 										}
 										
 										if ($estado == 'pagada') {
 											$estadoUser = 'Pagada';
-											$color = 'bg-secondary';
+											$color = 'bg-info';
+											$vercancelar = 'display:none;';
 										}
 									?>
 										<tr id="solicitud:<?php echo $solicitud['id_orden'] ?>">
@@ -118,7 +121,7 @@ if ($hora < 6) {
 											<td>
 												<!-- <a href="edit-usuario?ID=<?php echo $solicitud['id_orden'] ?>" target="_self"><span class="badge bg-primary"><i class="fas fa-edit"></i>Editar</span></a> -->
 												<a href="detalle-cajero?ID=<?php echo $solicitud['id_orden'] ?>" target="_self"><span class="badge bg-primary"><i class="fas fa-eye"></i>Ver Detalle</span></a>
-												<span class="badge bg-danger" id="<?php echo $solicitud['id'] ?>" onclick="eliminar('<?php echo $solicitud['id_orden'] ?>')">
+												<span style='<?php echo $vercancelar ?>' class="badge bg-danger" id="<?php echo $solicitud['id'] ?>" onclick="eliminar('<?php echo $solicitud['id_orden'] ?>')">
 													<i class="fas fa-trash"></i>Cancelar
 												</span>
 											</td>
