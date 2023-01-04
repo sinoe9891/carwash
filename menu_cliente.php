@@ -89,12 +89,11 @@ if ($hora < 6) {
 										// $consulta = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.id_mesero = b.id and `estado` NOT IN ('cola') ORDER BY `a`.`id_orden` DESC;");
 										// SELECT DISTINCT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c where a.id_client = 1 and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;
 										$consultacliente = $conn->query("SELECT * FROM `clientes`");
-										$contador = 0;
+										$contador = 1;
 										while ($solicitud = $consultacliente->fetch_array()) {
 											$id_cliente = $solicitud['id_cliente'];
 											$nombrecliente = $solicitud['nombre_cliente'];
 											$apellidos = $solicitud['apellido_cliente'];
-
 											// $email = $solicitud['email_user'];
 											$estado = $solicitud['estado'];
 											if ($estado == 'cola') {
@@ -121,34 +120,36 @@ if ($hora < 6) {
 												<td><?php echo '#' . $contador++; ?></td>
 												<td><?php echo $nombrecliente . ' ' . $apellidos ?></td>
 												<td>
-													<select name="vehiculo" id="vehiculo">
-														<option value="">Seleccionar Vehículo</option>
-
+													<select name="vehiculo<?php echo $id_cliente ?>[]" id="vehiculo">
+													<option value="0" name="vehiculo" name="vehiculo<?php echo $id_cliente ?>[]">Seleccionar</option>
 														<?php
 
-														$consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c where a.id_client = 1 and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;");
+														$consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c where a.id_client = $id_cliente and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;");
 														while ($solicitud = $consultavehiculo->fetch_array()) {
 															$id_vehiculocliente = $solicitud['id_vehiculocliente'];
 															$marca = $solicitud['marca'];
 															$ano_cliente = $solicitud['ano_cliente'];
 															$color = $solicitud['color'];
 															$placa = $solicitud['placa'];
+															// echo $id_vehiculocliente;
 														?>
-
-															<option value="<?php echo $id_vehiculocliente ?>" name="vehiculo"><?php echo $marca . ' ' . $color . ', ' . $ano_cliente . ', ' . $placa ?></option>
+															
+															<option value="<?php echo $id_vehiculocliente ?>" name="vehiculo<?php echo $id_cliente ?>[]"><?php echo $marca . ' ' . $color . ', ' . $ano_cliente . ', ' . $placa ?></option>
 														<?php
 														}
 														?>
 													</select>
 												</td>
 												<td>
-													<a href="detalle_factura?ID=<?php echo $solicitud['id_orden'] ?>" target="_self"><span class="badge bg-primary"><i class="fas fa-eye"></i>Ver Detalle</span></a>
 													<input type="hidden" name="idm" value="<?php echo $_GET['idm'] ?>">
 													<input type="hidden" name="idcliente" value="<?php echo $id_cliente ?>">
-													<input type="hidden" name="nombrecliente" value="<?php echo $nombrecliente . ' ' . $apellidos ?>">
-													<span class="badge bg-danger" style='<?php echo $ver ?>' id="<?php echo $solicitud['id_orden'] ?>" onclick="eliminar('<?php echo $solicitud['id_orden'] ?>')">
-														<i class="fas fa-trash"></i>Anular
-													</span>
+													<input type="hidden" name="" value="<?php echo $nombrecliente . ' ' . $apellidos ?>">
+													<!-- <a href="detalle_factura?ID=<?php echo $solicitud['id_orden'] ?>" target="_self"><span class="badge bg-primary"><i class="fas fa-eye"></i>Ver Detalle</span></a> -->
+													<label>
+														<input type="radio" name="seleccion" value="<?php echo $id_cliente ?>" required>
+														Seleccionar
+													</label>
+
 												</td>
 											</tr>
 										<?php

@@ -6,6 +6,8 @@ include 'inc/conexion.php';
 session_start();
 $name = $_SESSION['nombre_usuario'];
 $ordenid = $_GET['orden'];
+
+
 $today = getdate();
 $hora = $today["hours"];
 if ($hora < 6) {
@@ -55,7 +57,14 @@ if ($hora < 6) {
 				<section class="section clientes">
 					<div class="card">
 						<div class="card-body">
-							<H1>Orden #<?php echo $ordenid ?></H1>
+							<h5>Orden #<?php echo $ordenid ?></h5>
+							<div class="cliente" style="text-align: left;">
+		
+								<?php
+								
+								?>
+		
+							</div>
 							<table class="table table-striped" id="table1">
 								<thead>
 									<tr>
@@ -130,8 +139,8 @@ if ($hora < 6) {
 								</thead>
 							</table>
 							<div class="col-12 d-flex justify-content-end">
-								<a href="ordenes">
-									<div class="btn btn-primary me-1 mb-1">Ver Ordenes</div>
+								<a href="dashboard">
+									<div class="btn btn-primary me-1 mb-1">Regresar a Inicio</div>
 								</a>
 								<a href="mesas_mesero">
 									<div class="btn btn-secondary me-1 mb-1">Regresar</div>
