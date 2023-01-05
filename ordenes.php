@@ -74,7 +74,7 @@ if ($hora < 6) {
 									<tr>
 										<th>No. Orden</th>
 										<th>Fecha</th>
-										<th>Asinación No.</th>
+										<th>Espacio No.</th>
 										<th>Responsable</th>
 										<th>Estado</th>
 										<th>Acciones</th>
@@ -95,7 +95,7 @@ if ($hora < 6) {
 										$nombre = $solicitud['usuario_name'];
 										$apellidos = $solicitud['apellidos'];
 										// $email = $solicitud['email_user'];
-										$estado = $solicitud['estado'];
+										$estado = $solicitud['estado_orden'];
 										if ($estado == 'cola') {
 											$estadoUser = 'En Proceso';
 											$color = 'bg-success';

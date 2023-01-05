@@ -98,7 +98,7 @@ if ($hora < 6) {
 										$nombre = $solicitud['usuario_name'];
 										$apellidos = $solicitud['apellidos'];
 										// $email = $solicitud['email_user'];
-										$estado = $solicitud['estado'];
+										$estado = $solicitud['estado_orden'];
 										if ($estado == 'cola') {
 											$estadoUser = 'En Proceso';
 											$color = 'bg-success';

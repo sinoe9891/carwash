@@ -76,8 +76,6 @@ if ($result = mysqli_query($conn, $sql)) {
 			</div>
 		</div>
 		<!-- Navbar & Hero End -->
-
-
 		<!-- Service Start -->
 		<div class="container-xxl py-5">
 			<div class="container">
@@ -95,7 +93,7 @@ if ($result = mysqli_query($conn, $sql)) {
 									$id_mesero = $solicitud['id_mesero'];
 									$username = $solicitud['usuario_name'];
 									$apellidos = $solicitud['apellidos'];
-									$estado = $solicitud['estado'];
+									$estado = $solicitud['estado_orden'];
 									if ($estado == 'cola') {
 										$estadoFactura = 'En Proceso';
 										$color = 'bg-success';

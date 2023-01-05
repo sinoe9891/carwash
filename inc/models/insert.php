@@ -286,7 +286,7 @@ if ($accion === 'newOrden') {
 	$DateAndTime = date('Y-m-d h:i:s', time());
 	$date = date('Y-m-d', time());
 	//Creamos la orden
-	$orden = "INSERT INTO `ordenes` (`id_orden`, `datetime`, `estado`, `id_mesa`, `date`, `id_mesero`) VALUES (NULL, '$DateAndTime', 'cola', '$mesa', '$date', '$mesero')";
+	$orden = "INSERT INTO `ordenes` (`id_orden`, `datetime`, `estado_orden`, `id_mesa`, `date`, `id_mesero`, `id_cliente`, `id_vehiculo`) VALUES (NULL, '$DateAndTime', 'cola', '$mesa', '$date', '$mesero', '$seleccion', $idvehiculo)";
 	if (mysqli_query($conn, $orden)) {
 		$ultimoid = $conn->insert_id;
 		// echo $insert_id; 
@@ -374,7 +374,7 @@ if ($accion === 'facturacrear') {
 	echo 'Procede a Insertar';
 	$sql = "INSERT INTO `facturas` (no_factura, fecha_hora, id_orden, id_mesero, total, descuento, propina, impuesto, subtotal, estado_factura, grantotal) VALUES (NULL, '$datetime', '$id_orden', '$idmesero', '$grantotal', '$descuento', '$propina', '$impuesto', '$total', '$estado_factura', '$grantotal')";
 
-	$orden = "UPDATE `ordenes` SET `estado` = 'pagada' WHERE `ordenes`.`id_orden` = $id_orden";
+	$orden = "UPDATE `ordenes` SET `estado_orden` = 'pagada' WHERE `ordenes`.`id_orden` = $id_orden";
 
 	$conexion = mysqli_query($conn, $sql);
 	$conexionorden = mysqli_query($conn, $orden);
@@ -406,6 +406,8 @@ if ($accion === 'facturacrearcajero') {
 	$propina = $_POST['propina'];
 	$impuesto = $_POST['impuestototal'];
 	$estado_factura = 'pagado';
+	$id_vehiculo = $_POST['id_vehiculo'];
+	$nombrecliente = $_POST['nombrecliente'];
 
 	// echo $url = $_POST['url_foto'];
 	if (isset($_POST['precioferta'])) {
@@ -423,9 +425,9 @@ if ($accion === 'facturacrearcajero') {
 
 	//Si el usuario existe verificar el password
 	echo 'Procede a Insertar';
-	$sql = "INSERT INTO `facturas` (no_factura, fecha_hora, id_orden, id_mesero, total, descuento, propina, impuesto, subtotal, estado_factura, grantotal) VALUES (NULL, '$datetime', '$id_orden', '$idmesero', '$grantotal', '$descuento', '$propina', '$impuesto', '$total', '$estado_factura', '$grantotal')";
-
-	$orden = "UPDATE `ordenes` SET `estado` = 'pagada' WHERE `ordenes`.`id_orden` = $id_orden";
+	$sql = "INSERT INTO `facturas` (no_factura, fecha_hora, id_orden, id_mesero, total, descuento, propina, impuesto, subtotal, estado_factura, grantotal, nombrecliente, id_vehiculo) VALUES (NULL, '$datetime', '$id_orden', '$idmesero', '$grantotal', '$descuento', '$propina', '$impuesto', '$total', '$estado_factura', '$grantotal','$nombrecliente','$id_vehiculo')";
+	
+	$orden = "UPDATE `ordenes` SET `estado_orden` = 'pagada' WHERE `ordenes`.`id_orden` = $id_orden";
 
 	$conexion = mysqli_query($conn, $sql);
 	$conexionorden = mysqli_query($conn, $orden);
