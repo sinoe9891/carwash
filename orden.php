@@ -60,7 +60,7 @@ if ($hora < 6) {
 							<div class="cliente" style="text-align: left;">
 		
 								<?php
-								$consultadetalles = $conn->query("SELECT * FROM ordenes a, main_users c, clientes d, vehiculos_clientes f, vehiculos g, vehiculos_modelo h WHERE a.id_orden = $ordenid and a.id_mesero = c.id and a.id_cliente = d.id_cliente and a.id_vehiculo = f.id_vehiculocliente and f.marca_cliente = g.id_vehiculo and f.modelo_cliente = h.id_modelo;");
+								$consultadetalles = $conn->query("SELECT * FROM ordenes a, main_users c, clientes d, vehiculos_clientes f, vehiculos g, vehiculos_modelo h WHERE a.id_orden = $ordenid and a.responsable = c.id and a.id_cliente = d.id_cliente and a.id_vehiculo = f.id_vehiculocliente and f.marca_cliente = g.id_vehiculo and f.modelo_cliente = h.id_modelo;");
 								// var_dump($consultadetalles);
 								while ($solicitud = $consultadetalles->fetch_array()) {
 									$id_vehiculocliente = $solicitud['id_vehiculocliente'];

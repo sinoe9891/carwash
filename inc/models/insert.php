@@ -269,6 +269,7 @@ if ($accion === 'newPlato') {
 if ($accion === 'newOrden') {
 	include '../conexion.php';
 	$mesa = $_POST['mesa'];
+	$responsable = $_POST['responsable'];
 	$mesero = $_POST['mesero'];
 	$cantidad = $_POST['cantidad'];
 	$precio = $_POST['precio'];
@@ -286,11 +287,19 @@ if ($accion === 'newOrden') {
 	$DateAndTime = date('Y-m-d h:i:s', time());
 	$date = date('Y-m-d', time());
 	//Creamos la orden
-	$orden = "INSERT INTO `ordenes` (`id_orden`, `datetime`, `estado_orden`, `id_mesa`, `date`, `id_mesero`, `id_cliente`, `id_vehiculo`) VALUES (NULL, '$DateAndTime', 'cola', '$mesa', '$date', '$mesero', '$seleccion', $idvehiculo)";
+	$orden = "INSERT INTO `ordenes` (`id_orden`, `datetime`, `estado_orden`, `id_mesa`, `date`, `id_mesero`, `id_cliente`, `id_vehiculo`, `responsable`) VALUES (NULL, '$DateAndTime', 'cola', '$mesa', '$date', '$mesero', '$seleccion', $idvehiculo, $responsable)";
 	if (mysqli_query($conn, $orden)) {
 		$ultimoid = $conn->insert_id;
+		$sql = "UPDATE `mesas` SET `ocupada` = 1, `noordenocupada` = $ultimoid WHERE `mesas`.`id_asignacion` = $mesa";
+		if ($conn->query($sql) === TRUE) {
+			echo "Record updated successfully";
+			// header('Location: ../../ordenar.php?idplato=' . $idplato . '&up=1');
+		} else {
+			// header('Location: ../../ordenar.php?idm='.$idm.'&up=0');
+		}
 		// echo $insert_id; 
 	}
+
 	// echo $ultimoid;
 	$i = -1;
 	$total = 0;
@@ -312,7 +321,7 @@ if ($accion === 'newOrden') {
 			if ($precio_oferta == 0) {
 				$precio_oferta = $preciocondescueto;
 				$subtotal = 0;
-			}else{
+			} else {
 				$precio_oferta = $precio_oferta;
 			}
 			$totaldescuento = ($totaldescuento += $subtotal);
@@ -322,10 +331,10 @@ if ($accion === 'newOrden') {
 			// echo $totalSub . '<br><br>';
 			// echo $total . '<br><br>';
 
-			$sql = "INSERT INTO orden_detalle (`id_orden_detalle`, `id_mesero`, `descripcion`, `id_plato`, `precio_plato`,  `descuento`, `subtotal`, `cantidad`, `id_cliente`, `id_vehiculocliente`) VALUES ('$ultimoid', '$mesero', '$nombre', '$val', '$preciocondescueto',  '$subtotal', $precio_oferta, $cantidad[$i], $seleccion, $idvehiculo)";
+			$sql = "INSERT INTO orden_detalle (`id_orden_detalle`, `id_mesero`, `descripcion`, `id_plato`, `precio_plato`,  `descuento`, `subtotal`, `cantidad`, `id_cliente`, `id_vehiculocliente`, `responsable`) VALUES ('$ultimoid', '$mesero', '$nombre', '$val', '$preciocondescueto',  '$subtotal', $precio_oferta, $cantidad[$i], $seleccion, $idvehiculo, $responsable)";
 			if (mysqli_query($conn, $sql)) {
 				$insertado = true;
-			}else{
+			} else {
 				$insertado = false;
 			}
 		}
@@ -334,7 +343,7 @@ if ($accion === 'newOrden') {
 		echo 'Insertó Orden';
 		header('Location: ../../orden.php?orden=' . $ultimoid . '&fact=true');
 	} else {
-		header('Location: ../../orden.php?orden=0&fact=false');
+		// header('Location: ../../orden.php?orden=0&fact=false');
 		echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 	}
 }
@@ -349,6 +358,7 @@ if ($accion === 'facturacrear') {
 	// echo $DateAndTime;
 	// $datetime  = $_POST['datetime'];
 	$idmesero = $_POST['idmesero'];
+	$responsable = $_POST['responsable'];
 	$total = $_POST['total'];
 	$grantotal = $_POST['grantotal'];
 	$descuento = $_POST['descuento'];
@@ -372,7 +382,7 @@ if ($accion === 'facturacrear') {
 
 	//Si el usuario existe verificar el password
 	echo 'Procede a Insertar';
-	$sql = "INSERT INTO `facturas` (no_factura, fecha_hora, id_orden, id_mesero, total, descuento, propina, impuesto, subtotal, estado_factura, grantotal) VALUES (NULL, '$datetime', '$id_orden', '$idmesero', '$grantotal', '$descuento', '$propina', '$impuesto', '$total', '$estado_factura', '$grantotal')";
+	$sql = "INSERT INTO `facturas` (no_factura, fecha_hora, id_orden, id_mesero, total, descuento, propina, impuesto, subtotal, estado_factura, grantotal, responsable) VALUES (NULL, '$datetime', '$id_orden', '$idmesero', '$grantotal', '$descuento', '$propina', '$impuesto', '$total', '$estado_factura', '$grantotal', '$responsable')";
 
 	$orden = "UPDATE `ordenes` SET `estado_orden` = 'pagada' WHERE `ordenes`.`id_orden` = $id_orden";
 
@@ -391,15 +401,18 @@ if ($accion === 'facturacrear') {
 		echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 	}
 }
+
 if ($accion === 'facturacrearcajero') {
 	include '../conexion.php';
 	$id_orden = $_POST['id_orden'];
+	$id_mesa = $_POST['id_mesa'];
 	echo $id_orden;
 	$DateAndTime = date('Y-m-d h:i:s', time());
 	$datetime = date('Y-m-d h:i:s', time());
 	// echo $DateAndTime;
 	// $datetime  = $_POST['datetime'];
 	$idmesero = $_POST['idmesero'];
+	$responsable = $_POST['responsable'];
 	$total = $_POST['total'];
 	$grantotal = $_POST['grantotal'];
 	$descuento = $_POST['descuento'];
@@ -422,13 +435,20 @@ if ($accion === 'facturacrearcajero') {
 		$oferta = 0;
 		$preciooferta = 0;
 	}
-
+	echo $responsable;
+	$consulta2 = $conn->query("SELECT * FROM main_users WHERE id = $responsable");
+	while ($row = $consulta2->fetch_assoc()) {
+		$responsable = $row['nickname'];
+	}
 	//Si el usuario existe verificar el password
 	echo 'Procede a Insertar';
-	$sql = "INSERT INTO `facturas` (no_factura, fecha_hora, id_orden, id_mesero, total, descuento, propina, impuesto, subtotal, estado_factura, grantotal, nombrecliente, id_vehiculo) VALUES (NULL, '$datetime', '$id_orden', '$idmesero', '$grantotal', '$descuento', '$propina', '$impuesto', '$total', '$estado_factura', '$grantotal','$nombrecliente','$id_vehiculo')";
-	
+	$sql = "INSERT INTO `facturas` (no_factura, fecha_hora, id_orden, id_mesero, total, descuento, propina, impuesto, subtotal, estado_factura, grantotal, nombrecliente, id_vehiculo, responsable) VALUES (NULL, '$datetime', '$id_orden', '$idmesero', '$grantotal', '$descuento', '$propina', '$impuesto', '$total', '$estado_factura', '$grantotal','$nombrecliente','$id_vehiculo','$responsable')";
+
 	$orden = "UPDATE `ordenes` SET `estado_orden` = 'pagada' WHERE `ordenes`.`id_orden` = $id_orden";
 
+	$updatemesa = "UPDATE `mesas` SET `ocupada` = '0' WHERE `mesas`.`id_asignacion` = $id_mesa";
+
+	$conexionmesa = mysqli_query($conn, $updatemesa);
 	$conexion = mysqli_query($conn, $sql);
 	$conexionorden = mysqli_query($conn, $orden);
 	$last_id = mysqli_insert_id($conn);

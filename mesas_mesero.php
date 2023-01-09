@@ -22,9 +22,9 @@ if ($hora < 6) {
 
 <style>
 	.py-5 {
-    padding-top: 1.3rem !important;
-    padding-bottom: 1.3rem !important;
-}
+		padding-top: 1.3rem !important;
+		padding-bottom: 1.3rem !important;
+	}
 </style>
 
 <body>
@@ -66,7 +66,7 @@ if ($hora < 6) {
 						<div class="card-body">
 							<div class="row g-4">
 								<?php
-								$consulta = $conn->query("SELECT * FROM mesas WHERE id_mesero = $iduser ORDER BY numero_mesa ASC");
+								$consulta = $conn->query("SELECT * FROM mesas a, main_users b WHERE a.id_mesero = $iduser and a.id_mesero = b.id ORDER BY numero_mesa ASC");
 								$contador = 1;
 								$filas = $consulta->num_rows;
 								if ($filas > 0) {
@@ -75,6 +75,9 @@ if ($hora < 6) {
 										$numero_mesa = $solicitud['numero_mesa'];
 										$estado = $solicitud['estado_mesa'];
 										$asignada = $solicitud['asignada'];
+										$ocupada = $solicitud['ocupada'];
+										$nickname = $solicitud['nickname'];
+										$noordenocupada = $solicitud['noordenocupada'];
 										if ($estado == 'a') {
 											$estadoMesa = 'Habilitado';
 											$color = 'bg-success';
@@ -82,18 +85,33 @@ if ($hora < 6) {
 											$estadoMesa = 'Deshabilitado';
 											$color = 'bg-secondary';
 										}
-									?>
+								?>
 										<div class="col-sm-4 wow fadeInUp">
 											<div style="text-align:center;">
-												<a href="menu_cliente?idm=<?php echo $idmesa; ?>">
-												<i class="fa fa-3x fas fa-car-garage text-primary mb-4"></i>
-													<p>Espacio <?php echo $numero_mesa; ?></p>
+												
+												<?php
+												if ($ocupada == 1) {
+												?>
+													<a href="detalle-cajero?ID=<?php echo $noordenocupada; ?>">
+														<i class="fa fa-3x fas fa-car-garage text-danger mb-4"></i>
+														<p class="text-danger">Espacio <?php echo $numero_mesa; ?><br>
+														Ocupado por <?php echo $nickname; ?></p>
+													</a>
+												<?php
+												} else {
+												?>
+													<a href="menu_cliente?idm=<?php echo $idmesa; ?>">
+													<i class="fa fa-3x fas fa-car-garage text-success mb-4"></i>
+													<p class="text-success">Espacio <?php echo $numero_mesa; ?></p>
 												</a>
+												<?php
+												};
+												?>
 											</div>
 										</div>
-									<?php
+								<?php
 									}
-								}else{
+								} else {
 									echo '<div style="text-align:center;"><h3>No tienes Espacios asignados</h3></div>';
 								}
 								?>

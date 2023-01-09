@@ -82,7 +82,7 @@ if ($result = mysqli_query($conn, $sql)) {
 						<div class="card-body">
 							<form action="inc/models/insert.php" name="formulario" method="post">
 								<?php
-									$orden = $conn->query("SELECT * FROM ordenes a, main_users b, clientes c WHERE a.id_orden = $ID and b.id = a.id_mesero and a.id_cliente = c.id_cliente;");
+									$orden = $conn->query("SELECT * FROM ordenes a, main_users b, clientes c WHERE a.id_orden = $ID and b.id = a.responsable and a.id_cliente = c.id_cliente;");
 									$contador = 1;
 									$total = 0;
 									while ($solicitud = $orden->fetch_array()) {
@@ -90,6 +90,7 @@ if ($result = mysqli_query($conn, $sql)) {
 										$id_mesa = $solicitud['id_mesa'];
 										$id_mesero = $solicitud['id_mesero'];
 										$username = $solicitud['nickname'];
+										$responsable = $solicitud['responsable'];
 										$nombre_cliente = $solicitud['nombre_cliente'];
 										$apellido_cliente = $solicitud['apellido_cliente'];
 										$id_vehiculo = $solicitud['id_vehiculo'];
@@ -123,17 +124,20 @@ if ($result = mysqli_query($conn, $sql)) {
 									};
 								?>
 								<h3>Factura No. #<?php echo $ultimaorden; ?> <?php echo '| <span style="color:green;">'.$estadoFactura.'</span>' ?></h3>
+								<h5>Orden: <?php echo $ID ?></h5>
 								<h5>Fecha: <?php echo $datetime ?></h5>
 								<h5>Cliente: <?php echo $nombre_cliente . ' ' . $apellido_cliente ?></h5>
 								<h5>Responsable: <?php echo $username; ?></h5>
 								<h5>Ubicación No. <?php echo $id_mesa; ?></h5>
 								<input type="hidden" name="nombrecliente" value="<?php echo $nombre_cliente . ' ' . $apellido_cliente; ?>">
+								<input type="hidden" name="responsable" value="<?php echo $responsable; ?>">
 								<input type="hidden" name="id_vehiculo" value="<?php echo $id_vehiculo; ?>">
 								<table class="table table-striped" id="table1">
 									<thead>
 										<tr>
 											<th>No.</th>
 											<th>Producto</th>
+											<th>Categoría</th>
 											<th>Precio Unitario</th>
 											<th>Cantidad</th>
 											<th>Oferta</th>
@@ -145,15 +149,17 @@ if ($result = mysqli_query($conn, $sql)) {
 									<tbody>
 
 										<?php
-										$consulta = $conn->query("SELECT * FROM orden_detalle a WHERE a.id_orden_detalle = $ID ");
+										$consulta = $conn->query("SELECT * FROM orden_detalle a, categorias_menu b, menu c WHERE a.id_orden_detalle = $ID and c.categoria = b.id_categoria and a.id_plato = c.id;");
 										$contador = 1;
 										$total = 0;
 										while ($solicitud = $consulta->fetch_array()) {
-											$descripcion = $solicitud['descripcion'];
+											$descripcion = $solicitud['nombre'];
+											$nombre_categoria = $solicitud['nombre_categoria'];
 											$precio = $solicitud['precio_plato'];
 											$cantidad = $solicitud['cantidad'];
 											$descuento = $solicitud['descuento'];
 											$subtotal = $solicitud['subtotal'];
+											$id_orden_detalle = $solicitud['id_orden_detalle'];
 											if ($descuento > 0) {
 												// $precio = $precioplato;
 												$check = 'L. '.$descuento.' ✅ ';
@@ -165,10 +171,11 @@ if ($result = mysqli_query($conn, $sql)) {
 											<tr id="solicitud:<?php echo $solicitud['id'] ?>">
 												<td><?php echo $contador++; ?></td>
 												<td><?php echo $descripcion; ?></td>
+												<td><?php echo $nombre_categoria; ?></td>
 												<td><?php echo 'L. ' . $precio ?></td>
 												<td><?php echo $cantidad; ?></td>
 												<td><?php echo $check; ?></td>
-												<td><?php echo $subtotal; ?></td>
+												<td><?php echo 'L. ' . $subtotal; ?></td>
 											</tr>
 										<?php
 											$total += $subtotal;
@@ -178,6 +185,7 @@ if ($result = mysqli_query($conn, $sql)) {
 									</tbody>
 									<thead>
 										<tr>
+											<th></th>
 											<th></th>
 											<th></th>
 											<th></th>
@@ -193,6 +201,7 @@ if ($result = mysqli_query($conn, $sql)) {
 											<th></th>
 											<th></th>
 											<th></th>
+											<th></th>
 											<th style="text-align: right;">Impuesto</th>
 											<th><?php
 												$impuesto = 0.15;
@@ -202,6 +211,7 @@ if ($result = mysqli_query($conn, $sql)) {
 												?></th>
 										</tr>
 										<tr>
+											<th></th>
 											<th></th>
 											<th></th>
 											<th></th>
@@ -224,6 +234,7 @@ if ($result = mysqli_query($conn, $sql)) {
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="datetime" value="<?php echo $datetime  ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="idmesero" value="<?php echo $id_mesero ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="total" value="<?php echo $total ?>">
+									<input type="hidden" class="btn btn-primary me-1 mb-1" name="id_mesa" value="<?php echo $id_mesa ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="descuento" value="<?php echo $descuento ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="propina" value="<?php echo $propina ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" name="grantotal" value="<?php echo $grantotal ?>">

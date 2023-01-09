@@ -30,7 +30,7 @@ foreach ($_POST as $nombre_campo => $valor) {
 				$responsable = $valor[$i];
 				// echo $nombre_campo.': '. $idvehiculo.'<br>';
 				// $idresponsable = $valor[$i];
-			}else{
+			} else {
 				$alerta = 'No se seleccionó ningún vehículo';
 			}
 			// $consultavehiculo = $conn->query0("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c, clientes d where a.id_client = d.id_cliente and a.id_vehiculocliente = $valor[$i] and a.id_client = $seleccion and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;");
@@ -46,11 +46,9 @@ foreach ($_POST as $nombre_campo => $valor) {
 			// }
 			// echo 'ENTRÓ';
 		}
-	} 
+	}
 }
-echo $seleccion;
-echo $idvehiculo;
-echo $responsable;
+
 $today = getdate();
 $hora = $today["hours"];
 if ($hora < 6) {
@@ -106,12 +104,11 @@ if ($hora < 6) {
 		<!-- Menu Start -->
 		<div class="container-xxl py-5">
 			<div class="container">
-				<div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
+				<div class="tab-class text-center wow " data-wow-delay="0.1s">
 					<form action="ordenar" method="post" enctype="multipart/form-data">
-						<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+						<div class="text-center wow " data-wow-delay="0.1s">
 							<h5 class="section-title ff-secondary text-center text-primary fw-normal">Orden</h5>
 							<div class="cliente" style="text-align: left;">
-		
 								<?php
 								$consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c, clientes d, main_users e where a.id_client = d.id_cliente and a.id_vehiculocliente = $idvehiculo and a.id_client = $seleccion and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo and a.modelo_cliente = c.id_modelo and e.id = $responsable;");
 								// var_dump($consultavehiculo);
@@ -125,212 +122,125 @@ if ($hora < 6) {
 									$ano = $solicitud['ano_cliente'];
 									$color = $solicitud['color'];
 									echo '<h5>ID: ' . $id_cliente . '</h5>';
-									echo '<h5>Cliente: ' . $nombre_cliente . ' '. $apellido_cliente . '</h5>';
+									echo '<h5>Cliente: ' . $nombre_cliente . ' ' . $apellido_cliente . '</h5>';
 									echo '<h5>Vehículo: ' . $marca . '</h5>';
 									echo '<h5>Año: ' . $ano . '</h5>';
 									echo '<h5>Color: ' . $color . '</h5>';
 									echo '<h5>Responsable: ' . $nickname . '</h5>';
-									?>
-									
-									<?php
+								?>
+
+								<?php
 								}
 								?>
-		
-							</div>
-							<h3 class="mb-5">Selecciona los productos</h3>
-						</div>
-						<ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
-							<?php
-							$consultacategoria = $conn->query("SELECT * FROM `categorias_menu` WHERE estado = 'a'");
-							$contador = 0;
-							while ($solicitud = $consultacategoria->fetch_array()) {
-								$id_categoria = $solicitud['id_categoria'];
-								$nombre_categoria = $solicitud['nombre_categoria'];
-								$icono = $solicitud['icono'];
-								$contador++;
-								$active = 'active';
-								if ($contador == 1) {
-									$active = 'active';
-								} else {
-									$active = '';
-								}
-							?>
-								<li class="nav-item">
-									<a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 <?php echo $active ?>" data-bs-toggle="pill" href="#tab-<?php echo $id_categoria ?>">
-										<!-- <i class="fa fa-coffee fa-2x text-primary"></i> -->
-										<img src="<?php echo $icono ?>" alt="">
-										<div class="ps-3">
-											<!-- <small class="text-body">Popular</small> -->
-											<h6 class="mt-n1 mb-0"><?php echo $nombre_categoria ?></h6>
-										</div>
-									</a>
-								</li>
 
-							<?php
-							};
-							?>
-						</ul>
-						<div class="tab-content">
-							<div id="tab-1" class="tab-pane fade show p-0 active">
-								<div class="row g-4">
-									<?php
-									$consulta = $conn->query("SELECT * FROM `menu` WHERE estado_plato = 'a' and categoria = 1;");
-									$contador = 1;
-									while ($solicitud = $consulta->fetch_array()) {
-										$idplato = $solicitud['id'];
-										$nombre = $solicitud['nombre'];
-										$descripcion = $solicitud['descripcion'];
-										$precio = $solicitud['precio'];
-										$url_foto = $solicitud['url_foto'];
-										$oferta = $solicitud['oferta'];
-										$precio_oferta = $solicitud['precio_oferta'];
-										$estado = $solicitud['estado_plato'];
-										if ($estado == 'a') {
-											$estadoMesa = 'Habilitado';
-											$color = 'bg-success';
-										} elseif ($estado == 'd') {
-											$estadoMesa = 'Deshabilitado';
-											$color = 'bg-secondary';
-										}
-									?>
-										<div class="col-lg-6">
-											<div class="d-flex align-items-center">
-												<img class="flex-shrink-0 img-fluid rounded" src="<?php echo $url_foto ?>" alt="" style="width: 80px;">
-												<div class="w-100 d-flex flex-column text-start ps-4">
-													<h5 class="d-flex justify-content-between border-bottom pb-2">
-														<span><?php echo $nombre ?></span>
-														<?php
-														if ($oferta == 1) {
-															echo '<div style="text-align: right;"><div><span class="text-primary" style="font-size: 13px;text-decoration: line-through !important;">Antes L.' . $precio . '</span></div><div><span class="text-primary" style="color:#dc3545 !important;">Oferta L. ' . $precio_oferta . '</span></div></div>';
-														} else {
-															echo '<span class="text-primary">L.' . $precio . '</span>';
-														};
-														?>
-													</h5>
-													<small class="fst-italic"><?php echo $descripcion ?></small>
-												</div>
-												<div>
-													<input type="checkbox" name="menu[]" id="" value="<?php echo $idplato ?>">
-													<!-- <input type="number" name="number[]" id="" value="1"> -->
-												</div>
-											</div>
-										</div>
-									<?php
-									};
-									?>
-								</div>
-							</div>
-							<div id="tab-2" class="tab-pane fade show p-0">
-								<div class="row g-4">
-									<?php
-									$consulta = $conn->query("SELECT * FROM `menu` WHERE estado_plato = 'a' and categoria = 2;");
-									$contador = 1;
-									while ($solicitud = $consulta->fetch_array()) {
-										$idplato = $solicitud['id'];
-										$nombre = $solicitud['nombre'];
-										$descripcion = $solicitud['descripcion'];
-										$precio = $solicitud['precio'];
-										$url_foto = $solicitud['url_foto'];
-										$oferta = $solicitud['oferta'];
-										$precio_oferta = $solicitud['precio_oferta'];
-										$estado = $solicitud['estado_plato'];
-										if ($estado == 'a') {
-											$estadoMesa = 'Habilitado';
-											$color = 'bg-success';
-										} elseif ($estado == 'd') {
-											$estadoMesa = 'Deshabilitado';
-											$color = 'bg-secondary';
-										}
-									?>
-										<div class="col-lg-6">
-											<div class="d-flex align-items-center">
-												<img class="flex-shrink-0 img-fluid rounded" src="<?php echo $url_foto ?>" alt="" style="width: 80px;">
-												<div class="w-100 d-flex flex-column text-start ps-4">
-													<h5 class="d-flex justify-content-between border-bottom pb-2">
-														<span><?php echo $nombre ?></span>
-														<?php
-														if ($oferta == 1) {
-															echo '<div style="text-align: right;"><div><span class="text-primary" style="font-size: 13px;text-decoration: line-through !important;">Antes L.' . $precio . '</span></div><div><span class="text-primary" style="color:#dc3545 !important;">Oferta L. ' . $precio_oferta . '</span></div></div>';
-														} else {
-															echo '<span class="text-primary">L.' . $precio . '</span>';
-														};
-														?>
-													</h5>
-													<small class="fst-italic"><?php echo $descripcion ?></small>
-												</div>
-												<div>
-													<input type="checkbox" name="menu[]" id="" value="<?php echo $idplato ?>">
-													<!-- <input type="number" name="number[]" id="" value="1"> -->
-												</div>
-											</div>
-										</div>
-									<?php
-									};
-									?>
-								</div>
-							</div>
-							<div id="tab-3" class="tab-pane fade show p-0">
-								<div class="row g-4">
-									<?php
-									$consulta = $conn->query("SELECT * FROM `menu` WHERE estado_plato = 'a' and categoria = 3;");
-									$contador = 1;
-									while ($solicitud = $consulta->fetch_array()) {
-										$idplato = $solicitud['id'];
-										$nombre = $solicitud['nombre'];
-										$descripcion = $solicitud['descripcion'];
-										$precio = $solicitud['precio'];
-										$url_foto = $solicitud['url_foto'];
-										$oferta = $solicitud['oferta'];
-										$precio_oferta = $solicitud['precio_oferta'];
-										$estado = $solicitud['estado_plato'];
-										if ($estado == 'a') {
-											$estadoMesa = 'Habilitado';
-											$color = 'bg-success';
-										} elseif ($estado == 'd') {
-											$estadoMesa = 'Deshabilitado';
-											$color = 'bg-secondary';
-										}
-									?>
-										<div class="col-lg-6">
-											<div class="d-flex align-items-center">
-												<img class="flex-shrink-0 img-fluid rounded" src="<?php echo $url_foto ?>" alt="" style="width: 80px;">
-												<div class="w-100 d-flex flex-column text-start ps-4">
-													<h5 class="d-flex justify-content-between border-bottom pb-2">
-														<span><?php echo $nombre ?></span>
-														<span class="text-primary">L.<?php echo $precio ?></span>
-													</h5>
-													<small class="fst-italic"><?php echo $descripcion ?></small>
-												</div>
-												<div>
-													<input type="checkbox" name="menu[]" id="" value="<?php echo $idplato ?>">
-												</div>
-											</div>
-										</div>
-									<?php
-									};
-									?>
-								</div>
 							</div>
 						</div>
-						<div class="col-12 d-flex justify-content-end wow fadeInUp" data-wow-delay="0.1s">
-							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="idvehiculocliente" value="<?php echo $idvehiculo  ?>">
-							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="seleccion" value="<?php echo $seleccion ?>">
-							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="responsable" value="<?php echo $responsable ?>">
-							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="mesa" value="<?php echo $idmesa ?>">
-							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="mesero" value="<?php echo $id_user ?>">
-							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="accion" value="newOrden">
-							<input class="btn btn-primary me-1 mb-1" type="submit" value="Ordenar" name="crearorden">
-							<a href="menu_cliente?idm=<?php echo $idmesa?>">
-								<div class="btn btn-secondary me-1 mb-1">Regresar</div>
-							</a>
-						</div>
+						<section class="section clientes">
+							<div class="card">
+								<div class="card-body">
+									<h3>Seleccionar Productos</h3>
+									<h4> Hoy es: <?php
+													// date_default_timezone_set('America/Tegucigalpa');
+													$oldLocale = setlocale(LC_TIME, 'es_HN');
+													setlocale(LC_TIME, $oldLocale);
+													$date1 = date('d-m-Y', time());
+													echo $date1;
+													// setlocale(LC_ALL,"es_ES");
+													// echo strftime("%A %d de %B del %Y");
+													?></h4>
+									<table class="table table-striped" id="table1">
+										<thead>
+											<tr>
+												<th>No.</th>
+												<th>Fecha</th>
+												<th>Producto</th>
+												<th>Categoría</th>
+												<th>Precio</th>
+												<!-- <th>Oferta</th> -->
+												<th>Acciones</th>
+											</tr>
+										</thead>
+										<tbody>
+											<?php
+											$date = date('Y-m-d', time());
+											// while ($solicitud = $consulta->fetch_array()) {
+											// $consulta = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.date = '$date' and a.id_mesero = b.id and a.estado = 'concluida' ORDER BY a.datetime DESC");
+											// $consulta = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.id_mesero = b.id and `estado` NOT IN ('cola') ORDER BY `a`.`id_orden` DESC;");
+											$consulta = $conn->query("SELECT * FROM menu a, categorias_menu b WHERE estado_plato = 'a' and a.categoria = b.id_categoria ORDER BY `b`.`nombre_categoria` DESC");
+											$contador = 1;
+											while ($solicitud = $consulta->fetch_array()) {
+												$idplato = $solicitud['id'];
+												$nombre = $solicitud['nombre'];
+												$nombre_categoria = $solicitud['nombre_categoria'];
+												$descripcion = $solicitud['descripcion'];
+												$precio = $solicitud['precio'];
+												$url_foto = $solicitud['url_foto'];
+												$oferta = $solicitud['oferta'];
+												$precio_oferta = $solicitud['precio_oferta'];
+												$estado = $solicitud['estado_plato'];
+												if ($estado == 'a') {
+													$estadoMesa = 'Habilitado';
+													$color = 'bg-success';
+												} elseif ($estado == 'd') {
+													$estadoMesa = 'Deshabilitado';
+													$color = 'bg-secondary';
+												}
+											?>
+												<tr id="solicitud:<?php echo $solicitud['id_orden'] ?>">
+													<td><?php echo $idplato; ?></td>
+													<td><img class="flex-shrink-0 img-fluid rounded" src="<?php echo $url_foto ?>" alt="" style="width: 80px;"></td>
+													<td><?php echo $nombre ?></td>
+													<td><?php echo $nombre_categoria ?></td>
+													<td><?php if ($oferta == 1) {
+															echo '<div style="text-align:;"><div><span class="text-primary" style="font-size: 13px;text-decoration: line-through !important;">Antes L.' . $precio . '</span></div><div><span class="text-primary" style="color:#dc3545 !important;">Oferta L. ' . $precio_oferta . '</span></div></div>';
+														} else {
+															echo '<span style="text-align: right;" class="text-primary">L.' . $precio . '</span>';
+														}; ?></td>
+													<!-- <td><?php echo $precio_oferta ?></td> -->
+													<td>
+														<label>
+															<input type="checkbox" name="menu[]" id="" value="<?php echo $idplato ?>">
+															Seleccionar
+														</label>
+
+													</td>
+												</tr>
+											<?php
+											}
+											?>
+										</tbody>
+									</table>
+
+									<div class="col-12 d-flex justify-content-end wow fadeInUp" data-wow-delay="0.1s">
+										<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="idvehiculocliente" value="<?php echo $idvehiculo  ?>">
+										<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="seleccion" value="<?php echo $seleccion ?>">
+										<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="responsable" value="<?php echo $responsable ?>">
+										<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="mesa" value="<?php echo $idmesa ?>">
+										<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="mesero" value="<?php echo $id_user ?>">
+										<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="accion" value="newOrden">
+										<input class="btn btn-primary me-1 mb-1" type="submit" value="Siguiente" name="crearorden">
+										<a href="menu_cliente?idm=<?php echo $idmesa ?>">
+											<div class="btn btn-secondary me-1 mb-1">Regresar</div>
+										</a>
+									</div>
+								</div>
+							</div>
+						</section>
+					</form>
 				</div>
-				</form>
 			</div>
 		</div>
-		<!-- Menu End -->
+	</div>
+	<!-- Menu End -->
 
 
-		<?php
-		include 'inc/templates/footer.php';
-		?>
+	<?php
+	include 'inc/templates/footer.php';
+	?>
+	<script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+	<script src="assets/js/bootstrap.bundle.min.js"></script>
+	<script>
+		// Simple Datatable
+		let table1 = document.querySelector('#table1');
+		let dataTable = new simpleDatatables.DataTable(table1);
+	</script>

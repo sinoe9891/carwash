@@ -149,7 +149,7 @@ if ($hora < 6) {
 							</table>
 							<div class="col-12 d-flex justify-content-end">
 								<!-- <a href="new-usuario" class="btn btn-primary me-1 mb-1">Nuevo Registro</a> -->
-								<a href="mesas_mesero">
+								<a href="dashboard">
 									<div class="btn btn-secondary me-1 mb-1">Regresar</div>
 								</a>
 							</div>

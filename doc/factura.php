@@ -26,7 +26,12 @@ if (isset($_GET['ID'])) {
 		$id_mesero = $row['id_mesero'];
 		$cliente = $row['nombrecliente'];
 		$correocliente = $row['correo1'];
-		$usuarioname = $row['usuario_name'];
+		$usuarioname = $row['nickname'];
+		$responsable = $row['responsable'];
+	}
+	$consulta2 = $conn->query("SELECT * FROM main_users WHERE id = $responsable");
+	while ($row = $consulta2->fetch_assoc()) {
+		$responsable = $row['nickname'];
 	}
 
 	$date = date_create($datetime);
@@ -57,6 +62,7 @@ if (isset($_GET['ID'])) {
 			<p>Correo: admin@lalos.com</p>
 			<hr>
 			<p>Usuario: ' . $usuarioname . '</p>
+			<p>Responsable: ' . $responsable . '</p>
 			
 			<p>Fecha: ' . $datetime . '</p>
 			<p>Hora: ' . $hora . '</p>

@@ -192,10 +192,37 @@ if ($result = mysqli_query($conn, $sql)) {
 											<th></th>
 											<th></th>
 											<th></th>
-											<th>Total</th>
-											<th>
-												L. <input type="text" name="supertotal" id="supertotal" value="<?php echo sprintf('%.2f', $total) ?>">
-											</th>
+											<th style="text-align: right;">Subtotal</th>
+											<th><?php
+												echo 'L. ' . sprintf('%.2f', $total);
+												// echo 'L. ' . sprintf('%.2f', $total);
+												?></th>
+										</tr>
+										<tr>
+											<th></th>
+											<th></th>
+											<th></th>
+											<th></th>
+											<th style="text-align: right;">Impuesto</th>
+											<th><?php
+												$impuesto = 0.15;
+												$impuestototal = $total * $impuesto;
+												echo 'L. ' . sprintf('%.2f', ($impuestototal));
+												// echo 'L. ' . sprintf('%.2f', $total);
+												?></th>
+										</tr>
+										<tr>
+											<th></th>
+											<th></th>
+											<th></th>
+											<th></th>
+											<th style="text-align: right;">Total</th>
+											<th><?php
+												$grantotal = $total + $impuestototal;
+												$descuento = 0;
+												$propina = 0;
+												echo 'L. ' . sprintf('%.2f', $grantotal);
+												?></th>
 										</tr>
 									</thead>
 								<?php
