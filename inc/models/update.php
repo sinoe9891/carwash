@@ -64,11 +64,11 @@ if (isset($_POST['idplato']) && isset($_POST['updateplato'])) {
 	if (isset($_POST['precioferta'])) {
 		$preciooferta = $_POST['precioferta'];
 		if ($preciooferta == 0) {
-			echo 'Entró3';
+			// echo 'Entró3';
 			$oferta = 0;
 			$preciooferta = 0.00;
 		} else {
-			echo 'Entró2';
+			// echo 'Entró2';
 			$oferta = 1;
 		}
 	}
@@ -106,13 +106,13 @@ if (isset($_POST['idplato']) && isset($_POST['updateplato'])) {
 				$newname = implode('.', [$fechaActual, $extension]);
 				move_uploaded_file($temp, "$rutaproductos/$newname");
 			}
-			$sql = "UPDATE `menu` SET `nombre` = '$nombreplato', `descripcion` = '$descripcion', `precio` = '$precio', `categoria` = '$categoria', `url_foto` = 'img/productos/$newname', `oferta` = '$oferta', `precio_oferta` = '$preciooferta', `estado_plato` = '$estado'  WHERE `menu`.`id` = $idplato";
+			$sql = "UPDATE `menu` SET `nombre` = '$nombreplato', `descripcion_menu` = '$descripcion', `precio` = '$precio', `categoria` = '$categoria', `url_foto` = 'img/productos/$newname', `oferta` = '$oferta', `precio_oferta` = '$preciooferta', `estado_plato` = '$estado'  WHERE `menu`.`id` = $idplato";
 
 			if ($conn->query($sql) === TRUE) {
 				echo "Record updated successfully";
 				header('Location: ../../edit-plato.php?idplato='.$idplato.'&up=1');
 			} else {
-				// header('Location: ../../edit-plato.php?idm='.$idm.'&up=0');
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 			}
 		} else {
 			// echo "<br>El fichero $rutaproductos no existe<br>";
@@ -137,24 +137,28 @@ if (isset($_POST['idplato']) && isset($_POST['updateplato'])) {
 			//Cambiamos los permisos del archivo a 777 para poder modificarlo posteriormente
 			chmod($ruta, 0777);
 			move_uploaded_file($temp, $ruta);
-			$sql = "UPDATE `menu` SET `nombre` = '$nombreplato', `descripcion` = '$descripcion', `precio` = '$precio', `categoria` = '$categoria', `url_foto` = 'img/productos/$newname', `oferta` = '$oferta', `precio_oferta` = '$preciooferta', `estado_plato` = '$estado'  WHERE `menu`.`id` = $idplato";
+			$sql = "UPDATE `menu` SET `nombre` = '$nombreplato', `descripcion_menu` = '$descripcion', `precio` = '$precio', `categoria` = '$categoria', `url_foto` = 'img/productos/$newname', `oferta` = '$oferta', `precio_oferta` = '$preciooferta', `estado_plato` = '$estado'  WHERE `menu`.`id` = $idplato";
 
-			if ($conn->query($sql) === TRUE) {
+			if ($conn->query($sql)) {
 				echo "Record updated successfully";
 				header('Location: ../../edit-plato.php?idplato='.$idplato.'&up=1');
 			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 				// header('Location: ../../edit-plato.php?idm='.$idm.'&up=0');
 			}
+			
 		}
 	} else {
-		$sql = "UPDATE `menu` SET `nombre` = '$nombreplato', `descripcion` = '$descripcion', `precio` = '$precio', `categoria` = '$categoria', `url_foto` = '$url', `oferta` = '$oferta', `precio_oferta` = '$preciooferta', `estado_plato` = '$estado'  WHERE `menu`.`id` = $idplato";
-		echo $url;
-		echo 'Entró en el último';
+		$sql = "UPDATE `menu` SET `nombre` = '$nombreplato', `descripcion_menu` = '$descripcion', `precio` = '$precio', `categoria` = '$categoria', `url_foto` = '$url', `oferta` = '$oferta', `precio_oferta` = '$preciooferta', `estado_plato` = '$estado'  WHERE `menu`.`id` = $idplato";
+		// echo $url;
+		// echo 'Entró en el último';
+		var_dump($conn->query($sql));
 		if ($conn->query($sql) === TRUE) {
 			echo "Record updated successfully";
-			header('Location: ../../edit-plato.php?idplato='.$idplato.'&up=1');
+			header('Location: ../../edit-plato?idplato='.$idplato.'&up=1');
 		} else {
-			// header('Location: ../../edit-plato.php?idm='.$idm.'&up=0');
+			header('Location: ../../edit-plato?idplato='.$idplato.'&idm='.$idplato.'&up=0');
+			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 	}
 };

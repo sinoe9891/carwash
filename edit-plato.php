@@ -77,7 +77,7 @@ if (isset($_GET['idplato'])) {
 													while ($solicitud = $consulta->fetch_array()) {
 														$id = $solicitud['id'];
 														$nombre = $solicitud['nombre'];
-														$descripcion = $solicitud['descripcion'];
+														$descripcion = $solicitud['descripcion_menu'];
 														$precio = $solicitud['precio'];
 														$categoriaplato = $solicitud['categoria'];
 														$url_foto = $solicitud['url_foto'];

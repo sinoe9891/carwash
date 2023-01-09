@@ -84,15 +84,16 @@ if ($result = mysqli_query($conn, $sql)) {
 						<div class="card-body">
 							<form action="inc/models/insert.php" name="formulario" method="post">
 								<?php
-								$orden = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.id_orden = $ID and b.id = a.id_mesero");
+								$orden = $conn->query("SELECT * FROM ordenes a, main_users b, clientes c WHERE a.id_orden = $ID and b.id = a.responsable and a.id_cliente = c.id_cliente;");
 								$contador = 1;
 								$total = 0;
 								while ($solicitud = $orden->fetch_array()) {
 									$datetime = $solicitud['datetime'];
 									$id_mesa = $solicitud['id_mesa'];
 									$id_mesero = $solicitud['id_mesero'];
-									$username = $solicitud['usuario_name'];
-									$apellidos = $solicitud['apellidos'];
+									$nombre_cliente = $solicitud['nombre_cliente'];
+									$apellido_cliente = $solicitud['apellido_cliente'];
+									$username = $solicitud['nickname'];
 									$estado = $solicitud['estado_orden'];
 									if ($estado == 'cola') {
 										$estadoFactura = 'En Proceso';
@@ -120,12 +121,14 @@ if ($result = mysqli_query($conn, $sql)) {
 										$ver = '';
 									}
 								};
-								
+
 								?>
-								<h3>Factura No. #<?php echo $ultimaorden?> <?php echo '| <span style="color:green;">' . $estadoFactura . '</span>' ?></h3>
+								<h3>Factura No. #<?php echo $ultimaorden; ?> <?php echo '| <span style="color:green;">' . $estadoFactura . '</span>' ?></h3>
+								<h5>Orden: <?php echo $ID ?></h5>
 								<h5>Fecha: <?php echo $datetime ?></h5>
-								<h5>Responsable: <?php echo $username . ' ' . $apellidos ?></h5>
-								<h5>Ubicación: <?php echo $id_mesa ?></h5>
+								<h5>Cliente: <?php echo $nombre_cliente . ' ' . $apellido_cliente ?></h5>
+								<h5>Responsable: <?php echo $username; ?></h5>
+								<h5>Ubicación No. <?php echo $id_mesa; ?></h5>
 								<table class="table table-striped" id="table1">
 									<thead>
 										<tr>

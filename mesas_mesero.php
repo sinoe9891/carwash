@@ -66,7 +66,7 @@ if ($hora < 6) {
 						<div class="card-body">
 							<div class="row g-4">
 								<?php
-								$consulta = $conn->query("SELECT * FROM mesas a, main_users b WHERE a.id_mesero = $iduser and a.id_mesero = b.id ORDER BY numero_mesa ASC");
+								$consulta = $conn->query("SELECT * FROM mesas a, main_users b WHERE a.id_mesero = $iduser and a.id_mesero = b.id and a.estado_mesa = 'a' ORDER BY numero_mesa ASC");
 								$contador = 1;
 								$filas = $consulta->num_rows;
 								if ($filas > 0) {

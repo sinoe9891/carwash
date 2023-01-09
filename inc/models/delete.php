@@ -19,10 +19,13 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
 if (isset($_GET['delete']) && isset($_GET['orden'])) {
 	$accion = $_GET['delete'];
 	$id_orden = $_GET['orden'];
+	$lugar = $_GET['lugar'];
 	if ($accion === 'true') {
-		$sql = "UPDATE ordenes SET estado = 'cancelada' WHERE id_orden = $id_orden";
+		$sql = "UPDATE ordenes SET estado_orden = 'cancelada' WHERE id_orden = $id_orden";
 		if (mysqli_query($conn, $sql)) {
 			echo 'Insertó';
+			$sqlmesa = "UPDATE mesas SET ocupada = 0, noordenocupada = 0 WHERE id_asignacion = $lugar";
+			mysqli_query($conn, $sqlmesa);
 			header('Location: ../../ordenes?del=1');
 		} else {
 			// header('Location: ../../usuarios?del=0');
@@ -34,11 +37,15 @@ if (isset($_GET['delete']) && isset($_GET['orden'])) {
 if (isset($_GET['delete']) && isset($_GET['anular'])) {
 	$accion = $_GET['delete'];
 	$id_orden = $_GET['anular'];
+	$lugar = $_GET['lugar'];
 	if ($accion === 'true') {
-		$sql = "UPDATE ordenes SET estado = 'cancelada' WHERE id_orden = $id_orden";
+		$sql = "UPDATE ordenes SET estado_orden = 'cancelada' WHERE id_orden = $id_orden";
 		if (mysqli_query($conn, $sql)) {
 			echo 'Insertó';
+			$sqlmesa = "UPDATE mesas SET ocupada = 0, noordenocupada = 0 WHERE id_asignacion = $lugar";
+			mysqli_query($conn, $sqlmesa);
 			header('Location: ../../ordenes_admin?del=1');
+			echo "Error: " . $sqlmesa . "<br>" . mysqli_error($conn);
 		} else {
 			header('Location: ../../ordenes_admin?del=0');
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);

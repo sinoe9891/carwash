@@ -61,22 +61,23 @@ if ($hora < 6) {
 					<div class="card">
 						<div class="card-body">
 							<h3>Todas las Ordenes</h3>
-										<h4> Hoy es: <?php
-										// date_default_timezone_set('America/Tegucigalpa');
-										$oldLocale = setlocale(LC_TIME, 'es_HN');
-										setlocale(LC_TIME, $oldLocale);
-										$date1 = date('d-m-Y', time());
-										echo $date1;
-										// setlocale(LC_ALL,"es_ES");
-										// echo strftime("%A %d de %B del %Y");
-										?></h4>
+							<h4> Hoy es: <?php
+											// date_default_timezone_set('America/Tegucigalpa');
+											$oldLocale = setlocale(LC_TIME, 'es_HN');
+											setlocale(LC_TIME, $oldLocale);
+											$date1 = date('d-m-Y', time());
+											echo $date1;
+											// setlocale(LC_ALL,"es_ES");
+											// echo strftime("%A %d de %B del %Y");
+											?></h4>
 							<table class="table table-striped" id="table1">
 								<thead>
 									<tr>
 										<th>No. Orden</th>
 										<th>Fecha</th>
 										<th>Mesa</th>
-										<th>Mesero</th>
+										<th>Cajero</th>
+										<th>Responsable</th>
 										<th>Estado</th>
 										<th>Acciones</th>
 									</tr>
@@ -88,13 +89,15 @@ if ($hora < 6) {
 									// $consulta = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.date = '$date' and a.id_mesero = b.id and a.estado = 'concluida' ORDER BY a.datetime DESC");
 									// $consulta = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.id_mesero = b.id and `estado` NOT IN ('cola') ORDER BY `a`.`id_orden` DESC;");
 									$consulta = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.id_mesero = b.id ORDER BY `a`.`id_orden` DESC;");
+
+
 									$contador = 1;
 									$total = 0;
 									while ($solicitud = $consulta->fetch_array()) {
 										$id_orden = $solicitud['id_orden'];
 										$datetime = $solicitud['datetime'];
 										$id_mesa = $solicitud['id_mesa'];
-										$mesero = $solicitud['id_mesa'];
+										$responsable = $solicitud['responsable'];
 										$nombre = $solicitud['usuario_name'];
 										$apellidos = $solicitud['apellidos'];
 										// $email = $solicitud['email_user'];
@@ -111,12 +114,10 @@ if ($hora < 6) {
 											$estadoUser = 'Pendiente';
 											$color = 'bg-success';
 											$ver = '';
-											
-										}elseif ($estado == 'pagada') {
+										} elseif ($estado == 'pagada') {
 											$estadoUser = 'Pagada';
 											$color = 'bg-info';
 											$ver = 'display:none';
-											
 										}
 									?>
 										<tr id="solicitud:<?php echo $solicitud['id_orden'] ?>">
@@ -124,11 +125,18 @@ if ($hora < 6) {
 											<td><?php echo $datetime ?></td>
 											<td><?php echo $id_mesa ?></td>
 											<td><?php echo $nombre . ' ' . $apellidos ?></td>
+											<td><?php
+												$consultaresponsable = $conn->query("SELECT * FROM ordenes a, main_users b WHERE b.id = $responsable ORDER BY `a`.`id_orden` DESC;");
+												while ($solicitudresponsable = $consultaresponsable->fetch_array()) {
+													$nickname = $solicitudresponsable['nickname'];
+												}
+												echo $nickname;
+												?></td>
 											<td><?php echo '<span class="badge ' . $color . '">' . $estadoUser . '</span>' ?></td>
 											<td>
 												<a href="detalle_factura?ID=<?php echo $solicitud['id_orden'] ?>" target="_self"><span class="badge bg-primary"><i class="fas fa-eye"></i>Ver Detalle</span></a>
 
-												<span class="badge bg-danger" style='<?php echo $ver ?>' id="<?php echo $solicitud['id_orden'] ?>" onclick="eliminar('<?php echo $solicitud['id_orden'] ?>')">
+												<span class="badge bg-danger" style='<?php echo $ver ?>' id="<?php echo $solicitud['id_orden'] ?>" onclick="eliminar(<?php echo $id_orden ?>, <?php echo $id_mesa ?>)">
 													<i class="fas fa-trash"></i>Anular
 												</span>
 											</td>
@@ -181,7 +189,7 @@ if ($hora < 6) {
 		}
 		?>
 		<script>
-			function eliminar(orden) {
+			function eliminar(orden, idmesa) {
 				console.log("eliminar");
 				Swal.fire({
 					title: 'Seguro(a)?',
@@ -194,7 +202,7 @@ if ($hora < 6) {
 					cancelButtonText: 'Cancelar'
 				}).then((result) => {
 					if (result.isConfirmed) {
-						window.location = 'inc/models/delete.php?delete=true&anular=' + orden;
+						window.location = 'inc/models/delete.php?delete=true&lugar=' + idmesa + '&anular=' + orden;
 					} else if (result.isDenied) {
 						Swal.fire('Changes are not saved', '', 'info')
 					}
@@ -203,8 +211,8 @@ if ($hora < 6) {
 		</script>
 		<script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
 		<script src="assets/js/bootstrap.bundle.min.js"></script>
-<script>
-	// Simple Datatable
-	let table1 = document.querySelector('#table1');
-	let dataTable = new simpleDatatables.DataTable(table1);
-</script>
+		<script>
+			// Simple Datatable
+			let table1 = document.querySelector('#table1');
+			let dataTable = new simpleDatatables.DataTable(table1);
+		</script>
