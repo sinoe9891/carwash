@@ -7,7 +7,6 @@ session_start();
 $name = $_SESSION['nombre_usuario'];
 $ordenid = $_GET['orden'];
 
-
 $today = getdate();
 $hora = $today["hours"];
 if ($hora < 6) {
@@ -61,7 +60,24 @@ if ($hora < 6) {
 							<div class="cliente" style="text-align: left;">
 		
 								<?php
-								
+								$consultadetalles = $conn->query("SELECT * FROM ordenes a, main_users c, clientes d, vehiculos_clientes f, vehiculos g, vehiculos_modelo h WHERE a.id_orden = $ordenid and a.id_mesero = c.id and a.id_cliente = d.id_cliente and a.id_vehiculo = f.id_vehiculocliente and f.marca_cliente = g.id_vehiculo and f.modelo_cliente = h.id_modelo;");
+								// var_dump($consultadetalles);
+								while ($solicitud = $consultadetalles->fetch_array()) {
+									$id_vehiculocliente = $solicitud['id_vehiculocliente'];
+									$nombre_cliente = $solicitud['nombre_cliente'];
+									$apellido_cliente = $solicitud['apellido_cliente'];
+									$id_cliente = $solicitud['id_cliente'];
+									$nickname = $solicitud['nickname'];
+									$marca = $solicitud['marca'];
+									$ano = $solicitud['ano_cliente'];
+									$color = $solicitud['color'];
+									echo '<h5>ID: ' . $id_cliente . '</h5>';
+									echo '<h5>Cliente: ' .$nombre_cliente . ' '. $apellido_cliente . '</h5>';
+									echo '<h5>Vehículo: ' . $marca . '</h5>';
+									echo '<h5>Año: ' . $ano . '</h5>';
+									echo '<h5>Color: ' . $color . '</h5>';
+									echo '<h5>Responsable: ' . $nickname . '</h5>';
+								}
 								?>
 		
 							</div>

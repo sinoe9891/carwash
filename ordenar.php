@@ -10,8 +10,14 @@ $id_user = $_SESSION['id'];
 $idmesa = $_POST['mesa'];
 $seleccion = $_POST['seleccion'];
 $idvehiculo = $_POST['idvehiculocliente'];
+$responsable = $_POST['responsable'];
 $today = getdate();
 $hora = $today["hours"];
+
+
+// var_dump($_POST);
+
+
 if ($hora < 6) {
 	$saludo = " Hoy has madrugado mucho... ";
 } elseif ($hora < 12) {
@@ -86,11 +92,12 @@ if ($result = mysqli_query($conn, $sql)) {
 					<div class="card">
 						<div class="card-body">
 							<form action="inc/models/insert.php" name="formulario" method="post">
-								<h2>Orden #<?php echo $ultimaorden + 1 ?></h2>
+								<h5>Orden #<?php echo $ultimaorden + 1 ?></h5>
 								<div class="cliente" style="text-align: left;">
 
 								<?php
-								$consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c, clientes d where a.id_client = d.id_cliente and a.id_vehiculocliente = $idvehiculo and a.id_client = $seleccion and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;");
+								// $consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c, clientes d where a.id_client = d.id_cliente and a.id_vehiculocliente = $idvehiculo and a.id_client = $seleccion and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;");
+								$consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c, clientes d, main_users e where a.id_client = d.id_cliente and a.id_vehiculocliente = $idvehiculo and a.id_client = $seleccion and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo and a.modelo_cliente = c.id_modelo and e.id = $responsable;");
 								// var_dump($consultavehiculo);
 								while ($solicitud = $consultavehiculo->fetch_array()) {
 									$id_vehiculocliente = $solicitud['id_vehiculocliente'];
@@ -99,18 +106,16 @@ if ($result = mysqli_query($conn, $sql)) {
 									$id_cliente = $solicitud['id_cliente'];
 									$marca = $solicitud['marca'];
 									$ano = $solicitud['ano_cliente'];
+									$nickname = $solicitud['nickname'];
 									$color = $solicitud['color'];
 									echo '<h5>ID: ' . $id_cliente . '</h5>';
 									echo '<h5>Cliente: ' .$nombre_cliente . ' '. $apellido_cliente . '</h5>';
 									echo '<h5>Vehículo: ' . $marca . '</h5>';
 									echo '<h5>Año: ' . $ano . '</h5>';
 									echo '<h5>Color: ' . $color . '</h5>';
+									echo '<h5>Responsable: ' . $nickname . '</h5>';
 									?>
-									<input type="hidden" name="seleccion" value="<?php echo $seleccion ?>">
-									<input type="hidden" name="idvehiculocliente" value="<?php echo $id_vehiculocliente ?>">
-									<input type="hidden" name="nombrecliente" value="<?php echo $nombre_cliente . ' '. $apellido_cliente ?>">
-									<input type="hidden" name="anovehiculo" value="<?php echo $ano ?>">
-									<input type="hidden" name="color" value="<?php echo $color ?>">
+									
 									<?php
 								}
 								?>
@@ -201,6 +206,12 @@ if ($result = mysqli_query($conn, $sql)) {
 
 								</table>
 								<div class="col-12 d-flex justify-content-end">
+								<input type="hidden" name="seleccion" value="<?php echo $seleccion ?>">
+									<input type="hidden" name="idvehiculocliente" value="<?php echo $id_vehiculocliente ?>">
+									<input type="hidden" name="responsable" value="<?php echo $responsable ?>">
+									<input type="hidden" name="nombrecliente" value="<?php echo $nombre_cliente . ' '. $apellido_cliente ?>">
+									<input type="hidden" name="anovehiculo" value="<?php echo $ano ?>">
+									<input type="hidden" name="color" value="<?php echo $color ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="mesa" value="<?php echo $idmesa ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="mesero" value="<?php echo $id_user ?>">
 									<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="accion" value="newOrden">

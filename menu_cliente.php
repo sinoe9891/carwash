@@ -77,6 +77,7 @@ if ($hora < 6) {
 											<th>No.</th>
 											<th>Nombre</th>
 											<th>Vehículo</th>
+											<th>Responsable</th>
 											<th>Estado</th>
 											<!-- <th>Acciones</th> -->
 										</tr>
@@ -84,10 +85,6 @@ if ($hora < 6) {
 									<tbody>
 										<?php
 										$date = date('Y-m-d', time());
-										// while ($solicitud = $consulta->fetch_array()) {
-										// $consulta = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.date = '$date' and a.id_mesero = b.id and a.estado = 'concluida' ORDER BY a.datetime DESC");
-										// $consulta = $conn->query("SELECT * FROM ordenes a, main_users b WHERE a.id_mesero = b.id and `estado` NOT IN ('cola') ORDER BY `a`.`id_orden` DESC;");
-										// SELECT DISTINCT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c where a.id_client = 1 and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;
 										$consultacliente = $conn->query("SELECT * FROM `clientes`");
 										$contador = 1;
 										while ($solicitud = $consultacliente->fetch_array()) {
@@ -135,6 +132,25 @@ if ($hora < 6) {
 														?>
 															
 															<option value="<?php echo $id_vehiculocliente ?>" name="vehiculo<?php echo $id_cliente ?>[]"><?php echo $marca . ' ' . $color . ', ' . $ano_cliente . ', ' . $placa ?></option>
+														<?php
+														}
+														?>
+													</select>
+												<td>
+													<select name="colaboradores<?php echo $id_cliente ?>[]" id="colaboradores">
+													<option value="0" name="colaboradores" name="colaboradores<?php echo $id_cliente ?>[]">Seleccionar</option>
+														<?php
+
+														$consultacolaboradores = $conn->query("SELECT * FROM main_users WHERE role_user = 3 or role_user = 5 and asignacion = 0;");
+														while ($solicitud = $consultacolaboradores->fetch_array()) {
+															$id = $solicitud['id'];
+															$usuario_name = $solicitud['usuario_name'];
+															$apellidos = $solicitud['apellidos'];
+															$nickname = $solicitud['nickname'];
+															// echo $id_vehiculocliente;
+														?>
+															
+															<option value="<?php echo $id ?>" name="colaboradores<?php echo $id_cliente ?>[]"><?php echo $usuario_name . ' ' . $apellidos ?></option>
 														<?php
 														}
 														?>

@@ -89,7 +89,7 @@ if ($result = mysqli_query($conn, $sql)) {
 										$datetime = $solicitud['datetime'];
 										$id_mesa = $solicitud['id_mesa'];
 										$id_mesero = $solicitud['id_mesero'];
-										$username = $solicitud['usuario_name'];
+										$username = $solicitud['nickname'];
 										$nombre_cliente = $solicitud['nombre_cliente'];
 										$apellido_cliente = $solicitud['apellido_cliente'];
 										$id_vehiculo = $solicitud['id_vehiculo'];
@@ -125,8 +125,8 @@ if ($result = mysqli_query($conn, $sql)) {
 								<h3>Factura No. #<?php echo $ultimaorden; ?> <?php echo '| <span style="color:green;">'.$estadoFactura.'</span>' ?></h3>
 								<h5>Fecha: <?php echo $datetime ?></h5>
 								<h5>Cliente: <?php echo $nombre_cliente . ' ' . $apellido_cliente ?></h5>
-								<h5>Responsable: <?php echo $username . ' ' . $apellidos ?></h5>
-								<h5>Ubicación No. <?php echo $id_mesa ?></h5>
+								<h5>Responsable: <?php echo $username; ?></h5>
+								<h5>Ubicación No. <?php echo $id_mesa; ?></h5>
 								<input type="hidden" name="nombrecliente" value="<?php echo $nombre_cliente . ' ' . $apellido_cliente; ?>">
 								<input type="hidden" name="id_vehiculo" value="<?php echo $id_vehiculo; ?>">
 								<table class="table table-striped" id="table1">

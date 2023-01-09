@@ -11,13 +11,25 @@ $seleccion = $_POST['seleccion'];
 
 $idcliente = $_POST['idcliente'];
 // $vehiculo = $_POST['vehiculo'];
-
+// var_dump($_POST);
+$bandera = 0;
 foreach ($_POST as $nombre_campo => $valor) {
+
 	if (gettype($valor) == 'array') {
+		$bandera++;
+		// echo '<br>'.$bandera++.'<br>';
 		for ($i = 0; $i < count($valor); $i++) {
 			// $idvehiculo = $valor[$i];
-			if ($valor[$i] != 0) {
+			// echo $bandera;
+			if ($bandera == 1) {
 				$idvehiculo = $valor[$i];
+				// echo $nombre_campo.': '. $idvehiculo.'<br>';
+				// $idresponsable = $valor[$i];
+			}
+			if ($bandera == 2) {
+				$responsable = $valor[$i];
+				// echo $nombre_campo.': '. $idvehiculo.'<br>';
+				// $idresponsable = $valor[$i];
 			}else{
 				$alerta = 'No se seleccionó ningún vehículo';
 			}
@@ -36,7 +48,9 @@ foreach ($_POST as $nombre_campo => $valor) {
 		}
 	} 
 }
-
+echo $seleccion;
+echo $idvehiculo;
+echo $responsable;
 $today = getdate();
 $hora = $today["hours"];
 if ($hora < 6) {
@@ -99,27 +113,25 @@ if ($hora < 6) {
 							<div class="cliente" style="text-align: left;">
 		
 								<?php
-								$consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c, clientes d where a.id_client = d.id_cliente and a.id_vehiculocliente = $idvehiculo and a.id_client = $seleccion and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo;");
+								$consultavehiculo = $conn->query("SELECT * FROM vehiculos_clientes a, vehiculos b, vehiculos_modelo c, clientes d, main_users e where a.id_client = d.id_cliente and a.id_vehiculocliente = $idvehiculo and a.id_client = $seleccion and a.marca_cliente = c.marca_vehiculo and a.marca_cliente = b.id_vehiculo and a.modelo_cliente = c.id_modelo and a.modelo_cliente = c.id_modelo and e.id = $responsable;");
 								// var_dump($consultavehiculo);
 								while ($solicitud = $consultavehiculo->fetch_array()) {
 									$id_vehiculocliente = $solicitud['id_vehiculocliente'];
 									$nombre_cliente = $solicitud['nombre_cliente'];
 									$apellido_cliente = $solicitud['apellido_cliente'];
+									$nickname = $solicitud['nickname'];
 									$id_cliente = $solicitud['id_cliente'];
 									$marca = $solicitud['marca'];
 									$ano = $solicitud['ano_cliente'];
 									$color = $solicitud['color'];
-									echo '<h5>ID:' . $id_cliente . '</h5>';
-									echo '<h5>Cliente:' . $nombre_cliente . ' '. $apellido_cliente . '</h5>';
-									echo '<h5>Vehículo:' . $marca . '</h5>';
-									echo '<h5>Año:' . $ano . '</h5>';
-									echo '<h5>Color:' . $color . '</h5>';
+									echo '<h5>ID: ' . $id_cliente . '</h5>';
+									echo '<h5>Cliente: ' . $nombre_cliente . ' '. $apellido_cliente . '</h5>';
+									echo '<h5>Vehículo: ' . $marca . '</h5>';
+									echo '<h5>Año: ' . $ano . '</h5>';
+									echo '<h5>Color: ' . $color . '</h5>';
+									echo '<h5>Responsable: ' . $nickname . '</h5>';
 									?>
-									<input type="hidden" name="seleccion" value="<?php echo $seleccion ?>">
-									<input type="hidden" name="idvehiculocliente" value="<?php echo $id_vehiculocliente ?>">
-									<input type="hidden" name="nombrecliente" value="<?php echo $nombre_cliente ?>">
-									<input type="hidden" name="anovehiculo" value="<?php echo $ano ?>">
-									<input type="hidden" name="color" value="<?php echo $color ?>">
+									
 									<?php
 								}
 								?>
@@ -301,6 +313,9 @@ if ($hora < 6) {
 							</div>
 						</div>
 						<div class="col-12 d-flex justify-content-end wow fadeInUp" data-wow-delay="0.1s">
+							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="idvehiculocliente" value="<?php echo $idvehiculo  ?>">
+							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="seleccion" value="<?php echo $seleccion ?>">
+							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="responsable" value="<?php echo $responsable ?>">
 							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="mesa" value="<?php echo $idmesa ?>">
 							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="mesero" value="<?php echo $id_user ?>">
 							<input type="hidden" class="btn btn-primary me-1 mb-1" id="tipo" name="accion" value="newOrden">
