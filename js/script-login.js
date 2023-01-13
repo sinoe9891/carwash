@@ -48,12 +48,12 @@ function validarRegistro(e) {
 						}else if (respuesta.tipo === 'login' && respuesta.role === 3) {
 							//redireccionar a la pagina principal
 							console.log(respuesta);
-							window.location.href = 'mesas_mesero';
+							window.location.href = 'dashboard';
 							
 						}else if (respuesta.tipo === 'login' && respuesta.role === 4) {
 							//redireccionar a la pagina principal
 							console.log(respuesta);
-							window.location.href = 'mesas_mesero';
+							window.location.href = 'dashboard';
 						} else if (respuesta.tipo == 'crear') {
                             Swal.fire({
 								icon: 'success',

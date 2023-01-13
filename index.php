@@ -157,7 +157,7 @@ if ($hora < 6) {
 								while ($solicitud = $consulta->fetch_array()) {
 									$idplato = $solicitud['id'];
 									$nombre = $solicitud['nombre'];
-									$descripcion = $solicitud['descripcion'];
+									$descripcion = $solicitud['descripcion_menu'];
 									$precio = $solicitud['precio'];
 									$url_foto = $solicitud['url_foto'];
 									$oferta = $solicitud['oferta'];
@@ -202,7 +202,7 @@ if ($hora < 6) {
 								while ($solicitud = $consulta->fetch_array()) {
 									$idplato = $solicitud['id'];
 									$nombre = $solicitud['nombre'];
-									$descripcion = $solicitud['descripcion'];
+									$descripcion = $solicitud['descripcion_menu'];
 									$precio = $solicitud['precio'];
 									$url_foto = $solicitud['url_foto'];
 									$oferta = $solicitud['oferta'];
@@ -247,7 +247,7 @@ if ($hora < 6) {
 								while ($solicitud = $consulta->fetch_array()) {
 									$idplato = $solicitud['id'];
 									$nombre = $solicitud['nombre'];
-									$descripcion = $solicitud['descripcion'];
+									$descripcion = $solicitud['descripcion_menu'];
 									$precio = $solicitud['precio'];
 									$url_foto = $solicitud['url_foto'];
 									$oferta = $solicitud['oferta'];
